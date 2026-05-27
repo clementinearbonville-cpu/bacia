@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BacIA — Révise comme un champion</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#08080f;--bg2:#0f0f1a;--bg3:#141420;
+  --card:#1a1a28;--card2:#222235;--card3:#2a2a40;
+  --border:#2e2e45;--border2:#3d3d58;
+  --text:#eeeef8;--text2:#9999bb;--text3:#6060a0;
+  --accent:#7c6af7;--accent2:#a594fa;
+  --gold:#f5c518;--red:#ff4d4d;--green:#3dffa0;
+  --blue:#4da6ff;--orange:#ff8c42;--pink:#ff6eb4;--teal:#4dddcc;
+  --r:12px;--r2:20px;
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+h1,h2,h3,h4{font-family:'Syne',sans-serif}
+button,textarea,input,select{font-family:'DM Sans',sans-serif;outline:none}
+button{cursor:pointer}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg2)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* AUTH */
+#auth-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem;background:radial-gradient(ellipse at 30% 20%,rgba(124,106,247,.12),transparent 60%),var(--bg)}
+.auth-box{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:2.5rem;width:100%;max-width:480px}
+.auth-logo{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;letter-spacing:-.04em;margin-bottom:.3rem}
+.auth-logo span{color:var(--accent)}
+.auth-sub{color:var(--text2);font-size:.9rem;margin-bottom:1.5rem;line-height:1.6}
+.auth-tabs{display:flex;gap:4px;background:var(--bg2);border-radius:10px;padding:4px;margin-bottom:1.5rem}
+.auth-tab{flex:1;padding:10px;border-radius:8px;border:none;color:var(--text2);font-size:.9rem;font-weight:500;transition:all .2s}
+.auth-tab.active{background:var(--accent);color:#fff}
+.auth-tab:not(.active){background:transparent}
+.auth-tab:not(.active):hover{background:var(--card3);color:var(--text)}
+.fg{margin-bottom:1rem}
+.fg label{display:block;font-size:.83rem;color:var(--text2);margin-bottom:.35rem;font-weight:500}
+.fg input,.fg select{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:10px 14px;color:var(--text);font-size:.93rem;transition:border-color .2s}
+.fg input:focus,.fg select:focus{border-color:var(--accent)}
+.spe-choice{display:flex;gap:.75rem;margin-top:.4rem}
+.spe-btn{flex:1;padding:12px;border-radius:var(--r);border:2px solid var(--border);background:var(--bg2);color:var(--text2);font-size:.87rem;font-weight:500;transition:all .2s;text-align:center}
+.spe-btn:hover{border-color:var(--border2);color:var(--text)}
+.btn-primary{width:100%;padding:12px;background:var(--accent);border:none;border-radius:var(--r);color:#fff;font-size:1rem;font-weight:600;transition:all .2s;margin-top:.5rem}
+.btn-primary:hover{background:var(--accent2)}
+.auth-err{color:var(--red);font-size:.83rem;margin-top:.4rem;display:none}
+
+/* TOPBAR */
+#topbar{display:none;align-items:center;justify-content:space-between;padding:.75rem 1.5rem;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:200}
+.tbar-logo{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;letter-spacing:-.03em}
+.tbar-logo span{color:var(--accent)}
+.tbar-right{display:flex;align-items:center;gap:.75rem}
+.tbar-user{font-size:.83rem;color:var(--text2)}
+.tbar-user strong{color:var(--text)}
+.btn-sm{background:transparent;border:1px solid var(--border);color:var(--text2);padding:5px 12px;border-radius:8px;font-size:.78rem;transition:all .2s}
+.btn-sm:hover{border-color:var(--border2);color:var(--text)}
+.btn-sm.admin-btn{border-color:rgba(124,106,247,.4);color:var(--accent2)}
+.btn-sm.admin-btn:hover{background:rgba(124,106,247,.1)}
+.btn-sm.logout:hover{border-color:var(--red);color:var(--red)}
+
+/* MAIN */
+#main-app{display:none;min-height:calc(100vh - 49px)}
+#admin-page{display:none;min-height:calc(100vh - 49px);padding:2rem}
+#pending-page{display:none;min-height:100vh;align-items:center;justify-content:center;padding:2rem;background:var(--bg)}
+.app-inner{max-width:1120px;margin:0 auto;padding:1.5rem}
+
+/* DASHBOARD HEADER */
+.dash-header{margin-bottom:2rem}
+.dash-header h2{font-size:1.8rem;font-weight:800;letter-spacing:-.03em}
+.dash-header p{color:var(--text2);margin-top:.3rem;font-size:.92rem}
+.obj-pills{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1rem}
+.obj-pill{background:var(--card2);border:1px solid var(--border);border-radius:30px;padding:5px 14px;font-size:.8rem;color:var(--text2)}
+.obj-pill strong{color:var(--gold)}
+
+/* SUBJECT BLOCKS */
+.subjects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}
+.subject-block{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;transition:transform .2s}
+.subject-block:hover{transform:translateY(-2px)}
+.sb-header{display:flex;align-items:center;justify-content:space-between;padding:1.2rem 1.4rem;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
+.sb-header-left{display:flex;align-items:center;gap:.75rem}
+.sb-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+.sb-icon.philo{background:rgba(255,110,180,.15)}
+.sb-icon.physique{background:rgba(77,221,204,.15)}
+.sb-icon.maths{background:rgba(77,166,255,.15)}
+.sb-icon.svt{background:rgba(61,255,160,.15)}
+.sb-icon.oral{background:rgba(245,197,24,.15)}
+.sb-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700}
+.sb-meta{font-size:.76rem;color:var(--text2);margin-top:1px}
+.sb-right{display:flex;align-items:center;gap:.5rem}
+.red-badge{background:rgba(255,77,77,.2);color:var(--red);font-size:.72rem;padding:2px 8px;border-radius:20px;font-weight:600}
+.sb-chevron{color:var(--text3);font-size:1rem;transition:transform .3s}
+.sb-chevron.open{transform:rotate(180deg)}
+.sb-body{max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+.sb-body.open{max-height:3000px;padding:1.2rem 1.4rem}
+
+/* SUB-SECTIONS */
+.sub-section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);margin-bottom:.7rem;overflow:hidden}
+.ss-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;cursor:pointer;font-size:.88rem;font-weight:600}
+.ss-body{max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+.ss-body.open{max-height:4000px;padding:14px}
+.ss-body p{font-size:.87rem;line-height:1.75;color:var(--text2);margin-bottom:.6rem}
+.ss-body h5{color:var(--text);font-size:.87rem;margin:.7rem 0 .3rem;font-weight:600}
+.tip{background:var(--card2);border-left:3px solid var(--accent);border-radius:0 var(--r) var(--r) 0;padding:9px 13px;margin:.4rem 0;font-size:.85rem;color:var(--text2);line-height:1.65}
+.tip.gold{border-color:var(--gold)}
+.tip.red{border-color:var(--red)}
+.tip.green{border-color:var(--green)}
+.steps{counter-reset:s;list-style:none;margin:.4rem 0}
+.steps li{counter-increment:s;padding:.35rem 0 .35rem 1.8rem;position:relative;font-size:.85rem;color:var(--text2);line-height:1.6;border-bottom:1px solid var(--border)}
+.steps li:last-child{border:none}
+.steps li::before{content:counter(s);position:absolute;left:0;top:.35rem;width:18px;height:18px;background:var(--accent);color:#fff;border-radius:50%;font-size:.68rem;display:flex;align-items:center;justify-content:center;font-weight:700;line-height:18px;text-align:center}
+.badge-grid{display:flex;flex-wrap:wrap;gap:.35rem;margin:.4rem 0}
+.badge{padding:3px 9px;border-radius:20px;font-size:.72rem}
+.badge.pink{background:rgba(255,110,180,.12);border:1px solid rgba(255,110,180,.25);color:var(--pink)}
+.badge.blue{background:rgba(77,166,255,.1);border:1px solid rgba(77,166,255,.2);color:var(--blue)}
+.badge.green{background:rgba(61,255,160,.1);border:1px solid rgba(61,255,160,.2);color:var(--green)}
+
+/* PROJECTS */
+.proj-section{margin-top:1rem}
+.proj-section-title{font-size:.76rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);font-weight:600;margin-bottom:.5rem}
+.proj-list{display:flex;flex-direction:column;gap:.5rem;margin-bottom:.75rem}
+.proj-item{display:flex;align-items:center;justify-content:space-between;padding:10px 13px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;transition:all .2s}
+.proj-item:hover{border-color:var(--border2);background:var(--card3)}
+.proj-item.red{border-color:rgba(255,77,77,.4);background:rgba(255,77,77,.06)}
+.proj-item.red .proj-name{color:var(--red)}
+.proj-name{font-weight:500;font-size:.88rem}
+.proj-meta{font-size:.73rem;color:var(--text2);margin-top:1px}
+.proj-warn{font-size:.7rem;color:var(--red);margin-top:1px}
+.proj-right{display:flex;align-items:center;gap:.4rem}
+.score-badge{font-size:.76rem;font-weight:600;padding:2px 8px;border-radius:6px}
+.score-badge.ok{background:rgba(61,255,160,.12);color:var(--green)}
+.score-badge.bad{background:rgba(255,77,77,.15);color:var(--red)}
+.score-badge.none{background:var(--card3);color:var(--text3)}
+.del-btn{background:rgba(255,77,77,.1);border:1px solid rgba(255,77,77,.25);color:var(--red);border-radius:6px;padding:2px 7px;font-size:.72rem;transition:all .2s}
+.del-btn:hover{background:rgba(255,77,77,.2)}
+.btn-add{width:100%;padding:9px;background:transparent;border:1px dashed var(--border2);border-radius:var(--r);color:var(--text2);font-size:.85rem;transition:all .2s}
+.btn-add:hover{border-color:var(--accent);color:var(--accent);background:rgba(124,106,247,.06)}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:500;align-items:flex-start;justify-content:center;padding:1rem;overflow-y:auto}
+.modal-bg.open{display:flex}
+.modal{background:var(--card);border:1px solid var(--border2);border-radius:var(--r2);width:100%;max-width:800px;margin:auto;overflow:hidden}
+.modal-head{padding:1.2rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-head h3{font-size:1.1rem;font-weight:700}
+.modal-close{background:transparent;border:none;color:var(--text2);font-size:1.5rem;line-height:1;padding:0;transition:color .2s}
+.modal-close:hover{color:var(--text)}
+.modal-body{padding:1.5rem}
+
+/* TABS */
+.tabs{display:flex;gap:4px;background:var(--bg2);border-radius:10px;padding:4px;margin-bottom:1.5rem}
+.tab{flex:1;padding:9px 12px;border-radius:8px;border:none;color:var(--text2);font-size:.83rem;font-weight:500;transition:all .2s;text-align:center}
+.tab.active{background:var(--accent);color:#fff}
+.tab:not(.active){background:transparent}
+
+/* FORMS */
+.form-row{margin-bottom:1rem}
+.form-row label{display:block;font-size:.83rem;color:var(--text2);margin-bottom:.35rem;font-weight:500}
+.form-row input,.form-row select,.form-row textarea{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:10px 14px;color:var(--text);font-size:.9rem;transition:border-color .2s;resize:vertical;line-height:1.7}
+.form-row input:focus,.form-row select:focus,.form-row textarea:focus{border-color:var(--accent)}
+
+/* SPINNER */
+.loading{display:flex;align-items:center;gap:.75rem;color:var(--text2);font-size:.88rem;padding:1.25rem;justify-content:center}
+.spinner{width:18px;height:18px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* LEARNING */
+.fc-progress{margin-bottom:1.25rem}
+.fc-progress-bar{height:5px;background:var(--bg2);border-radius:3px;overflow:hidden;margin-top:.4rem}
+.fc-progress-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .4s}
+.q-card{background:var(--card2);border:1px solid var(--border2);border-radius:var(--r);padding:1.25rem;margin-bottom:1rem}
+.q-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:.5rem}
+.q-text{font-size:.98rem;font-weight:600;line-height:1.5;color:var(--text);margin-bottom:1rem}
+.answer-ta{width:100%;min-height:100px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:.75rem;color:var(--text);font-size:.88rem;resize:vertical;line-height:1.75}
+.answer-ta:focus{border-color:var(--accent)}
+.correction-box{border-radius:var(--r);padding:1.25rem;margin:.75rem 0}
+.correction-box.green-border{border:1px solid rgba(61,255,160,.4);background:rgba(61,255,160,.04)}
+.correction-box.red-border{border:1px solid rgba(255,77,77,.4);background:rgba(255,77,77,.04)}
+.correction-box.orange-border{border:1px solid rgba(255,140,66,.4);background:rgba(255,140,66,.04)}
+.note-big{font-size:2.8rem;font-weight:800;font-family:'Syne',sans-serif;text-align:center;margin:.5rem 0}
+.note-big.good{color:var(--green)}.note-big.mid{color:var(--gold)}.note-big.bad{color:var(--red)}
+.btn-action{padding:10px 20px;border-radius:var(--r);border:none;font-weight:600;font-size:.88rem;transition:all .2s;cursor:pointer}
+.btn-action.primary{background:var(--accent);color:#fff}
+.btn-action.primary:hover{background:var(--accent2)}
+.btn-action.success{background:rgba(61,255,160,.15);color:var(--green);border:1px solid rgba(61,255,160,.3)}
+.btn-action.danger{background:rgba(255,77,77,.12);color:var(--red);border:1px solid rgba(255,77,77,.3)}
+.btn-action.muted{background:var(--card3);color:var(--text2);border:1px solid var(--border2)}
+.btn-full{width:100%;display:block;text-align:center}
+.mt1{margin-top:.5rem}.mt2{margin-top:1rem}.mt3{margin-top:1.5rem}
+
+/* GRAND ORAL */
+.rec-controls{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin:.75rem 0}
+.timer{font-size:1.4rem;font-weight:700;font-family:'Syne',sans-serif;color:var(--accent);min-width:55px}
+.btn-rec{padding:9px 18px;border-radius:var(--r);border:none;font-weight:600;font-size:.87rem;display:flex;align-items:center;gap:.4rem;transition:all .2s;cursor:pointer}
+.btn-rec.start{background:var(--red);color:#fff}.btn-rec.start:hover{background:#ff3333}
+.btn-rec.stop{background:var(--card3);color:var(--text);border:1px solid var(--border2)}
+.rec-ind{display:flex;align-items:center;gap:.4rem;color:var(--red);font-weight:600;font-size:.85rem}
+.rec-dot{width:8px;height:8px;background:var(--red);border-radius:50%;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.transcript-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:.9rem;min-height:80px;font-size:.87rem;color:var(--text2);line-height:1.7;white-space:pre-wrap;max-height:180px;overflow-y:auto;margin-top:.6rem}
+
+/* ADMIN */
+.admin-inner{max-width:700px;margin:0 auto}
+.admin-header{margin-bottom:1.5rem}
+.admin-header h2{font-size:1.5rem;font-weight:800}
+.admin-header p{color:var(--text2);font-size:.88rem;margin-top:.3rem}
+.req-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:.9rem 1.2rem;margin-bottom:.6rem;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.req-info .req-name{font-weight:600;font-size:.92rem}
+.req-info .req-meta{font-size:.76rem;color:var(--text2);margin-top:2px}
+.req-actions{display:flex;gap:.4rem}
+.btn-accept{background:rgba(61,255,160,.12);color:var(--green);border:1px solid rgba(61,255,160,.3);padding:5px 12px;border-radius:7px;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-accept:hover{background:rgba(61,255,160,.22)}
+.btn-reject{background:rgba(255,77,77,.1);color:var(--red);border:1px solid rgba(255,77,77,.25);padding:5px 12px;border-radius:7px;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-reject:hover{background:rgba(255,77,77,.2)}
+.section-title{font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);font-weight:600;margin:.5rem 0 .6rem}
+.empty-state{color:var(--text3);font-size:.85rem;padding:.5rem 0}
+.upill{display:inline-flex;align-items:center;gap:.3rem;padding:2px 8px;border-radius:20px;font-size:.72rem;font-weight:600;margin-left:.4rem}
+.upill.admin{background:rgba(124,106,247,.2);color:var(--accent2);border:1px solid rgba(124,106,247,.3)}
+.upill.active{background:rgba(61,255,160,.1);color:var(--green);border:1px solid rgba(61,255,160,.2)}
+.upill.pending{background:rgba(245,197,24,.1);color:var(--gold);border:1px solid rgba(245,197,24,.2)}
+
+/* PENDING */
+.pending-box{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:2.5rem;max-width:440px;width:100%;text-align:center}
+.pending-box h3{font-size:1.35rem;font-weight:800;margin-bottom:.6rem}
+.pending-box p{color:var(--text2);font-size:.9rem;line-height:1.7;margin-bottom:1.5rem}
+.pending-pulse{width:48px;height:48px;border-radius:50%;background:rgba(245,197,24,.12);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin:0 auto 1.2rem;animation:ppulse 2s infinite}
+@keyframes ppulse{0%,100%{box-shadow:0 0 0 0 rgba(245,197,24,.3)}50%{box-shadow:0 0 0 10px rgba(245,197,24,0)}}
+
+@media(max-width:600px){.spe-choice{flex-direction:column}.subjects-grid{grid-template-columns:1fr}.modal-body{padding:1rem}}
+</style>
+</head>
+<body>
+
+<!-- AUTH -->
+<div id="auth-page">
+  <div class="auth-box">
+    <div class="auth-logo">Bac<span>IA</span></div>
+    <p class="auth-sub">Ton coach de révision IA — objectif mention <strong style="color:var(--gold)">Très Bien ≥ 16/20</strong></p>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tab-login" onclick="switchAuth('login')">Se connecter</button>
+      <button class="auth-tab" id="tab-register" onclick="switchAuth('register')">Créer un compte</button>
+    </div>
+    <div id="login-form">
+      <div class="fg"><label>Prénom</label><input type="text" id="l-name" placeholder="Ton prénom"></div>
+      <div class="fg"><label>Mot de passe</label><input type="password" id="l-pass" placeholder="Mot de passe"></div>
+      <div class="auth-err" id="l-err">Compte introuvable ou mot de passe incorrect.</div>
+      <button class="btn-primary" onclick="doLogin()">Se connecter →</button>
+    </div>
+    <div id="register-form" style="display:none">
+      <div class="fg"><label>Prénom</label><input type="text" id="r-name" placeholder="Ton prénom"></div>
+      <div class="fg"><label>Mot de passe</label><input type="password" id="r-pass" placeholder="Choisir un mot de passe"></div>
+      <div class="fg">
+        <label>Ta spécialité</label>
+        <div class="spe-choice">
+          <button class="spe-btn" id="spe-mp" onclick="selectSpe('maths-physique')">🔢 Maths + Physique</button>
+          <button class="spe-btn" id="spe-sp" onclick="selectSpe('svt-physique')">🌿 SVT + Physique</button>
+        </div>
+      </div>
+      <div class="auth-err" id="r-err">Remplis tous les champs et choisis ta spé.</div>
+      <button class="btn-primary" onclick="doRegister()">Créer mon compte →</button>
+    </div>
+  </div>
+</div>
+
+<!-- PENDING -->
+<div id="pending-page" style="display:none;min-height:100vh;align-items:center;justify-content:center;padding:2rem;background:var(--bg)">
+  <div class="pending-box">
+    <div class="pending-pulse">⏳</div>
+    <h3>Demande envoyée !</h3>
+    <p>Ton compte est en attente de validation. Reviens après avoir été accepté(e).</p>
+    <button class="btn-sm logout" onclick="doLogout()" style="margin:0 auto;display:block">Se déconnecter</button>
+  </div>
+</div>
+
+<!-- TOPBAR -->
+<div id="topbar">
+  <div class="tbar-logo">Bac<span>IA</span></div>
+  <div class="tbar-right">
+    <span class="tbar-user">Connecté : <strong id="tbar-name"></strong></span>
+    <button class="btn-sm admin-btn hidden" id="admin-btn" onclick="showAdminPage()">⚙️ Admin</button>
+    <button class="btn-sm hidden" id="back-btn" onclick="showDashPage()">← Tableau de bord</button>
+    <button class="btn-sm logout" onclick="doLogout()">Déconnexion</button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="main-app">
+  <div class="app-inner">
+    <div class="dash-header">
+      <h2>Tableau de bord</h2>
+      <p>Objectif : mention Très Bien — ≥ 16/20</p>
+      <div class="obj-pills">
+        <div class="obj-pill">🎯 Objectif global : <strong>≥ 16/20</strong></div>
+        <div class="obj-pill">📚 Philo : <strong>17 notions à maîtriser</strong></div>
+        <div class="obj-pill">⚗️ Physique : <strong>19 chapitres</strong></div>
+        <div class="obj-pill" id="obj-spe"></div>
+      </div>
+    </div>
+    <div class="subjects-grid" id="subjects-grid"></div>
+  </div>
+</div>
+
+<!-- ADMIN PAGE -->
+<div id="admin-page">
+  <div class="admin-inner">
+    <div class="admin-header">
+      <h2>⚙️ Panneau Admin</h2>
+      <p>Gère les accès de tes amis.</p>
+    </div>
+    <div class="section-title">🕐 Demandes en attente</div>
+    <div id="admin-pending"></div>
+    <div class="section-title" style="margin-top:1.5rem">✅ Utilisateurs acceptés</div>
+    <div id="admin-users"></div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal-bg" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modal-title"></h3>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ========== DATA ==========
+const STORE = 'bacia_v1';
+let DB = {users:{},admin:null};
+let CUR = null;
+
+function loadDB(){
+  try{ const d=JSON.parse(localStorage.getItem(STORE)||'{}'); DB.users=d.users||{}; DB.admin=d.admin||null; }
+  catch(e){}
+  CUR = localStorage.getItem('bacia_session')||null;
+}
+function saveDB(){ localStorage.setItem(STORE,JSON.stringify({users:DB.users,admin:DB.admin})); }
+function me(){ if(!CUR||!DB.users[CUR])return null; const u=DB.users[CUR]; if(!u.projects)u.projects={}; if(!u.goHistory)u.goHistory=[]; return u; }
+function saveMe(){ saveDB(); }
+function isAdmin(){ return DB.admin===CUR; }
+
+// ========== CONSTANTS ==========
+const PHILO_NOTIONS=['La conscience','L\'inconscient','La perception','Autrui','Le désir','L\'existence et le temps','La liberté','La raison','La vérité','La science','La religion','L\'art','Le travail','La technique','L\'État','La justice','La morale'];
+const PHYSIQUE_CHAPS=['Mécanique','Énergie','Électricité','Ondes','Optique','Thermodynamique','Chimie organique','Cinétique','Équilibre chimique','Solutions acides-bases','Chimie des solutions','Électrochimie','Physique quantique','Astrophysique','Signal et information','Transformations nucléaires','Mécanique des fluides','Mouvements et forces','Spectroscopie'];
+const MATHS_CHAPS=['Suites et récurrences','Dérivation et étude de fonctions','Intégration','Limites et continuité','Fonctions logarithme et exponentielle','Trigonométrie','Nombres complexes','Probabilités et loi normale','Statistiques et fluctuation','Géométrie dans l\'espace','Équations différentielles','Dénombrement et combinatoire','Arithmétique','Matrices et transformations'];
+const SVT_CHAPS=['Génétique et évolution','Expression du génome','Immunologie','Physiologie','Neurosciences','Reproduction','Écologie','Évolution','Biosphère','Géologie','Tectonique','Ressources naturelles'];
+
+// ========== AUTH ==========
+let selectedSpe='';
+function switchAuth(tab){
+  document.getElementById('tab-login').classList.toggle('active',tab==='login');
+  document.getElementById('tab-register').classList.toggle('active',tab==='register');
+  document.getElementById('login-form').style.display=tab==='login'?'block':'none';
+  document.getElementById('register-form').style.display=tab==='register'?'block':'none';
+}
+function selectSpe(spe){
+  selectedSpe=spe;
+  ['mp','sp'].forEach(id=>{ const b=document.getElementById('spe-'+id); b.style.borderColor=((id==='mp'&&spe==='maths-physique')||(id==='sp'&&spe==='svt-physique'))?'#7c6af7':'#2e2e45'; b.style.color=((id==='mp'&&spe==='maths-physique')||(id==='sp'&&spe==='svt-physique'))?'#a594fa':'#9999bb'; b.style.background=((id==='mp'&&spe==='maths-physique')||(id==='sp'&&spe==='svt-physique'))?'rgba(124,106,247,.15)':'#0f0f1a'; });
+}
+function doLogin(){
+  const name=document.getElementById('l-name').value.trim().toLowerCase();
+  const pass=document.getElementById('l-pass').value;
+  const err=document.getElementById('l-err');
+  if(!name||!pass){err.textContent='Remplis tous les champs.';err.style.display='block';return;}
+  if(!DB.users[name]||DB.users[name].pass!==pass){err.style.display='block';return;}
+  err.style.display='none';
+  CUR=name; localStorage.setItem('bacia_session',name);
+  if(DB.users[name].pending){showPage('pending');return;}
+  launchApp();
+}
+function doRegister(){
+  const name=document.getElementById('r-name').value.trim().toLowerCase();
+  const pass=document.getElementById('r-pass').value;
+  const err=document.getElementById('r-err');
+  if(!name||!pass||!selectedSpe){err.style.display='block';return;}
+  if(DB.users[name]){err.textContent='Ce prénom est déjà pris.';err.style.display='block';return;}
+  err.style.display='none';
+  const isFirst=Object.keys(DB.users).length===0;
+  DB.users[name]={pass,spe:selectedSpe,projects:{},goHistory:[],approved:isFirst,pending:!isFirst};
+  if(isFirst) DB.admin=name;
+  CUR=name; localStorage.setItem('bacia_session',name);
+  saveDB();
+  if(isFirst) launchApp(); else showPage('pending');
+}
+function doLogout(){ CUR=null; localStorage.removeItem('bacia_session'); showPage('auth'); }
+
+// ========== PAGES ==========
+function showPage(p){
+  document.getElementById('auth-page').style.display=p==='auth'?'flex':'none';
+  document.getElementById('pending-page').style.display=p==='pending'?'flex':'none';
+  document.getElementById('topbar').style.display=(p==='app'||p==='admin')?'flex':'none';
+  document.getElementById('main-app').style.display=p==='app'?'block':'none';
+  document.getElementById('admin-page').style.display=p==='admin'?'block':'none';
+}
+function launchApp(){
+  checkRedAlerts();
+  showPage('app');
+  document.getElementById('tbar-name').textContent=CUR.charAt(0).toUpperCase()+CUR.slice(1);
+  document.getElementById('admin-btn').classList.toggle('hidden',!isAdmin());
+  document.getElementById('back-btn').classList.add('hidden');
+  renderDashboard();
+}
+function showAdminPage(){ showPage('admin'); document.getElementById('back-btn').classList.remove('hidden'); document.getElementById('admin-btn').classList.add('hidden'); renderAdminPage(); }
+function showDashPage(){ showPage('app'); document.getElementById('back-btn').classList.add('hidden'); document.getElementById('admin-btn').classList.toggle('hidden',!isAdmin()); renderDashboard(); }
+function showPendingPage(){ showPage('pending'); document.getElementById('topbar').style.display='flex'; document.getElementById('tbar-name').textContent=CUR.charAt(0).toUpperCase()+CUR.slice(1); }
+
+// ========== RED ALERTS ==========
+function checkRedAlerts(){
+  const u=me(); if(!u)return;
+  const oneWeek=7*24*60*60*1000, now=Date.now();
+  Object.values(u.projects||{}).forEach(p=>{ if(p.lastVisit&&(now-p.lastVisit)>oneWeek) p.alert=true; });
+  saveMe();
+}
+function isRed(p){ return p.alert||(p.lastScore!==undefined&&p.lastScore!==null&&p.lastScore<16); }
+
+// ========== ADMIN ==========
+function renderAdminPage(){
+  const pending=Object.entries(DB.users).filter(([k,v])=>v.pending&&k!==DB.admin);
+  const approved=Object.entries(DB.users).filter(([k,v])=>v.approved&&k!==DB.admin);
+  const pEl=document.getElementById('admin-pending');
+  const uEl=document.getElementById('admin-users');
+  pEl.innerHTML=pending.length?pending.map(([n,u])=>`<div class="req-card"><div class="req-info"><div class="req-name">${n.charAt(0).toUpperCase()+n.slice(1)} <span class="upill pending">En attente</span></div><div class="req-meta">Spé : ${u.spe==='maths-physique'?'Maths + Physique':'SVT + Physique'}</div></div><div class="req-actions"><button class="btn-accept" onclick="approveUser('${n}')">✓ Accepter</button><button class="btn-reject" onclick="rejectUser('${n}')">✗ Refuser</button></div></div>`).join(''):'<div class="empty-state">Aucune demande en attente.</div>';
+  uEl.innerHTML=approved.length?approved.map(([n,u])=>`<div class="req-card"><div class="req-info"><div class="req-name">${n.charAt(0).toUpperCase()+n.slice(1)} <span class="upill active">Actif</span></div><div class="req-meta">Spé : ${u.spe==='maths-physique'?'Maths + Physique':'SVT + Physique'} · ${Object.keys(u.projects||{}).length} projet(s)</div></div><div class="req-actions"><button class="btn-reject" onclick="revokeUser('${n}')">Révoquer</button></div></div>`).join(''):'<div class="empty-state">Aucun autre utilisateur.</div>';
+}
+function approveUser(n){ DB.users[n].approved=true; DB.users[n].pending=false; saveDB(); renderAdminPage(); }
+function rejectUser(n){ if(confirm('Supprimer '+n+' ?')){ delete DB.users[n]; saveDB(); renderAdminPage(); } }
+function revokeUser(n){ if(confirm('Révoquer '+n+' ?')){ delete DB.users[n]; saveDB(); renderAdminPage(); } }
+
+// ========== DASHBOARD ==========
+function getBlocks(spe){
+  const blocks=[
+    {id:'philo',label:'Philosophie',emoji:'🧠',cls:'philo',chaps:PHILO_NOTIONS,chapterLabel:'notion',total:17},
+    {id:'physique',label:'Physique-Chimie',emoji:'⚗️',cls:'physique',chaps:PHYSIQUE_CHAPS,chapterLabel:'chapitre',total:19},
+  ];
+  if(spe==='maths-physique') blocks.push({id:'maths',label:'Mathématiques',emoji:'🔢',cls:'maths',chaps:MATHS_CHAPS,chapterLabel:'chapitre',total:14});
+  else blocks.push({id:'svt',label:'SVT',emoji:'🌿',cls:'svt',chaps:SVT_CHAPS,chapterLabel:'chapitre',total:12});
+  blocks.push({id:'oral',label:'Grand Oral',emoji:'🎤',cls:'oral',chaps:[],chapterLabel:'',total:0});
+  return blocks;
+}
+function renderDashboard(){
+  const u=me(); if(!u)return;
+  document.getElementById('obj-spe').textContent=u.spe==='maths-physique'?'🔢 Maths : 14 chapitres':'🌿 SVT : 12 chapitres';
+  const grid=document.getElementById('subjects-grid');
+  grid.innerHTML='';
+  getBlocks(u.spe).forEach(b=>grid.appendChild(buildBlock(b,u)));
+}
+function buildBlock(b,u){
+  const projs=Object.values(u.projects||{}).filter(p=>p.blockId===b.id);
+  const redCount=projs.filter(p=>isRed(p)).length;
+  const div=document.createElement('div');
+  div.className='subject-block'; div.id='block-'+b.id;
+  div.innerHTML=`
+    <div class="sb-header" onclick="toggleBlock('${b.id}')">
+      <div class="sb-header-left">
+        <div class="sb-icon ${b.cls}">${b.emoji}</div>
+        <div>
+          <div class="sb-title">${b.label}</div>
+          <div class="sb-meta">${projs.length} projet(s)${redCount>0?' · <span style="color:var(--red)">'+redCount+' à retravailler</span>':''}</div>
+        </div>
+      </div>
+      <div class="sb-right">
+        ${redCount>0?`<span class="red-badge">🔴 ${redCount}/${projs.length}</span>`:''}
+        <span class="sb-chevron" id="chev-${b.id}">▾</span>
+      </div>
+    </div>
+    <div class="sb-body" id="sb-${b.id}">
+      ${buildBlockBody(b,u,projs)}
+    </div>`;
+  return div;
+}
+function buildBlockBody(b,u,projs){
+  if(b.id==='oral') return buildOralBody(u);
+  let html=buildMethodSections(b);
+  html+=`<div class="proj-section">
+    <div class="proj-section-title">Mes projets</div>
+    <div class="proj-list" id="plist-${b.id}">
+      ${projs.length?projs.map(p=>buildProjItem(p)).join(''):'<div style="color:var(--text3);font-size:.83rem;padding:.4rem 0">Aucun projet — crée-en un !</div>'}
+    </div>
+    <button class="btn-add" onclick="openNewProject('${b.id}','${b.label}')">+ Nouveau projet "${b.label}"</button>
+  </div>`;
+  return html;
+}
+function buildProjItem(p){
+  const red=isRed(p);
+  const sc=p.lastScore===undefined||p.lastScore===null;
+  const scoreClass=sc?'none':p.lastScore>=16?'ok':'bad';
+  const scoreLabel=sc?'Non noté':p.lastScore+'/20';
+  return `<div class="proj-item${red?' red':''}" onclick="openProject('${p.id}')">
+    <div>
+      <div class="proj-name">${p.title}</div>
+      <div class="proj-meta">${p.chapter||''}${p.lastVisit?' · Vu '+new Date(p.lastVisit).toLocaleDateString('fr-FR'):''}</div>
+      ${p.alert?'<div class="proj-warn">⚠️ Non revu depuis +7 jours</div>':''}
+    </div>
+    <div class="proj-right">
+      <span class="score-badge ${scoreClass}">${scoreLabel}</span>
+      <button class="del-btn" onclick="event.stopPropagation();deleteProject('${p.id}')">🗑</button>
+    </div>
+  </div>`;
+}
+function toggleBlock(id){ const b=document.getElementById('sb-'+id); const c=document.getElementById('chev-'+id); b.classList.toggle('open'); c.classList.toggle('open'); }
+function ssToggle(id){ const b=document.getElementById('ssb-'+id); b.classList.toggle('open'); }
+
+// ========== METHODS SECTIONS ==========
+function buildMethodSections(b){
+  if(b.id==='philo') return buildPhiloMethods();
+  if(b.id==='physique') return buildPhysiqueMethods();
+  if(b.id==='maths') return buildMathsMethods();
+  if(b.id==='svt') return buildSVTMethods();
+  return '';
+}
+function buildPhiloMethods(){
+  return `
+  <div class="sub-section">
+    <div class="ss-head" onclick="ssToggle('ph-meth')"><span>📝 Méthode dissertation (conseils de profs)</span><span>▾</span></div>
+    <div class="ss-body" id="ssb-ph-meth">
+      <div class="tip gold">La dissertation c'est une <strong>argumentation construite</strong>, pas un résumé de cours. Le correcteur veut voir que tu <em>penses</em>.</div>
+      <h5>1. Analyser le sujet (15 min — ne JAMAIS zapper)</h5>
+      <p>Définis chaque mot, même les plus banals. Cherche la <strong>tension</strong> entre les termes : c'est là que naît la problématique.</p>
+      <div class="tip">🔍 Exemple : "La liberté est-elle une illusion ?" → définis <em>liberté</em> (pouvoir faire ce qu'on veut ? autonomie rationnelle ?) ET <em>illusion</em> (fausse croyance ? ce qui trompe ?). La tension naît de là.</div>
+      <h5>2. La problématique</h5>
+      <p>Elle doit montrer que le sujet n'a pas de réponse évidente. Formule : <em>"Dans quelle mesure… ?"</em> ou <em>"Comment concilier… ?"</em></p>
+      <div class="tip red">⚠️ Erreur fréquente : reformuler le sujet. Ta problématique doit être un PROBLÈME philosophique réel.</div>
+      <h5>3. Plan dialectique en 3 parties</h5>
+      <ul class="steps">
+        <li><strong>Partie I — Thèse :</strong> la réponse naturelle, développée sérieusement</li>
+        <li><strong>Partie II — Antithèse :</strong> la réponse opposée, avec ses arguments</li>
+        <li><strong>Partie III — Dépassement :</strong> une position plus nuancée. C'est ici qu'on voit ta pensée.</li>
+      </ul>
+      <div class="tip">📌 Chaque argument = <strong>idée → exemple → analyse</strong>. L'exemple illustre, l'analyse explique POURQUOI il prouve ton idée.</div>
+      <h5>4. Introduction (rédigée, jamais au brouillon)</h5>
+      <ul class="steps">
+        <li>Accroche originale (jamais "De tout temps les hommes…")</li>
+        <li>Définition des termes du sujet</li>
+        <li>Problématique clairement formulée</li>
+        <li>Annonce du plan</li>
+      </ul>
+      <div class="tip gold">⭐ Ce qui fait un 16+ : des auteurs CITÉS ET ANALYSÉS (Platon, Descartes, Kant, Sartre, Hegel, Nietzsche, Freud…), des exemples ORIGINAUX, une troisième partie qui surprend.</div>
+    </div>
+  </div>
+  <div class="sub-section">
+    <div class="ss-head" onclick="ssToggle('ph-cons')"><span>🎓 Conseils pour viser 16+ en philo</span><span>▾</span></div>
+    <div class="ss-body" id="ssb-ph-cons">
+      <div class="tip green">✅ "Un élève qui cite Kant sans l'expliquer perd des points. Un élève qui explique en quoi Kant répond au problème posé en gagne." — Prof de terminale</div>
+      <div class="tip">📖 Connais au moins 2-3 auteurs par notion. Sais dire en une phrase leur thèse principale ET un exemple qu'ils utilisent.</div>
+      <div class="tip red">❌ Les pires erreurs : plan en 2 parties, introduction sans problématique, exemples sans analyse, hors-sujet par excès de cours récité.</div>
+      <div class="tip gold">⭐ Pour un 18-20 : la troisième partie doit surprendre le correcteur avec un point de vue que les deux premières n'avaient pas envisagé.</div>
+      <h5>Les 17 notions :</h5>
+      <div class="badge-grid">${PHILO_NOTIONS.map(n=>`<span class="badge pink">${n}</span>`).join('')}</div>
+    </div>
+  </div>`;
+}
+function buildPhysiqueMethods(){
+  return `
+  <div class="sub-section">
+    <div class="ss-head" onclick="ssToggle('phy-red')"><span>✏️ Méthode rédaction (points gagnés au bac)</span><span>▾</span></div>
+    <div class="ss-body" id="ssb-phy-red">
+      <div class="tip gold">⭐ La rédaction représente jusqu'à 30% de la note. Un résultat juste mal rédigé peut perdre 2-3 points.</div>
+      <ul class="steps">
+        <li><strong>Écrire la loi/formule AVANT de calculer.</strong> Ex : "D'après la loi d'Ohm : U = R × I"</li>
+        <li><strong>Application numérique avec unités :</strong> U = 10 × 0,5 = 5 V. TOUJOURS l'unité.</li>
+        <li><strong>Phrase de conclusion :</strong> "Ainsi, la tension vaut U = 5 V." Jamais juste un chiffre encadré.</li>
+        <li><strong>Schéma annoté</strong> quand c'est possible : bilan des forces, schéma circuit…</li>
+        <li><strong>Connecteurs logiques :</strong> "Or", "Donc", "D'où", "On en déduit" — structure ta logique.</li>
+        <li><strong>Vérification de l'homogénéité</strong> pour les questions de 3-4 points.</li>
+      </ul>
+      <div class="tip red">⚠️ Erreurs coûteuses : unité manquante (−0,5 pt), formule sans explication, résultat absurde non commenté.</div>
+      <div class="tip">📐 Graphiques : titre, axes nommés AVEC unités, points lisibles, courbe lissée, légende si plusieurs courbes.</div>
+      <h5>19 chapitres :</h5>
+      <div class="badge-grid">${PHYSIQUE_CHAPS.map(c=>`<span class="badge blue">${c}</span>`).join('')}</div>
+    </div>
+  </div>
+  <div class="sub-section">
+    <div class="ss-head" onclick="ssToggle('phy-cons')"><span>🎓 Conseils pour viser 16+ en physique</span><span>▾</span></div>
+    <div class="ss-body" id="ssb-phy-cons">
+      <div class="tip green">✅ Les exercices les plus discriminants : mécanique (bilan des forces) et électricité (lois de Kirchhoff). Ce sont les pires moyennes — maîtrise-les.</div>
+      <div class="tip">🧠 Lis TOUT le sujet avant de répondre. Les questions de fin donnent souvent un indice sur ce qu'on attendait au début.</div>
+      <div class="tip red">❌ Ne jamais abandonner une question. Même "D'après le principe d'inertie…" montre que tu connais le cours et peut rapporter des points.</div>
+      <div class="tip gold">⭐ Les correcteurs valorisent : montrer d'où vient la formule, pas seulement comment l'appliquer.</div>
+    </div>
+  </div>`;
+}
+function buildMathsMethods(){
+  return `
+  <div class="sub-section">
+    <div class="ss-head" onclick="ssToggle('mat-red')"><span>✏️ Méthode rédaction (points gagnés au bac)</span><span>▾</span></div>
+    <div class="ss-body" id="ssb-mat-red">
+      <div class="tip gold">⭐ Une rédaction soignée peut faire monter une note de 12 à 16 sans plus de bonnes réponses. Les correcteurs lisent la démarche.</div>
+      <ul class="steps">
+        <li><strong>Pose les notations :</strong> "Soit f la fonction définie sur ℝ par…" dès le début.</li>
+        <li><strong>Justifie chaque étape :</strong> cite le théorème utilisé, explique pourquoi.</li>
+        <li><strong>Conclus chaque question :</strong> "Donc la suite (uₙ) est croissante et majorée, elle converge."</li>
+        <li><strong>Récurrence complète :</strong> initialisation → hérédité → conclusion. Jamais de raccourcis.</li>
+        <li><strong>Tableaux de signes/variations :</strong> bien tracés, avec valeurs critiques, flèches de variation.</li>
+        <li><strong>Probabilités :</strong> nomme les événements, cite les formules (Bayes, probabilités totales…).</li>
+      </ul>
+      <div class="tip red">⚠️ Erreurs classiques : calculer sans justifier, ne pas conclure, oublier les conditions d'un théorème.</div>
+      <div class="tip">🔢 Suites et fonctions : toujours préciser le domaine, les conditions de récurrence, vérifier les cas de base.</div>
+      <h5>14 chapitres :</h5>
+      <div class="badge-grid">${MATHS_CHAPS.map(c=>`<span class="badge blue">${c}</span>`).join('')}</div>
+    </div>
+  </div>
+  <div class="sub-section">
+    <div class="ss-head" onclick="ssToggle('mat-cons')"><span>🎓 Conseils pour viser 16+ en maths</span><span>▾</span></div>
+    <div class="ss-body" id="ssb-mat-cons">
+      <div class="tip green">✅ Probabilités (loi normale, espérance, variance) et intégration sont presque toujours au programme — maîtrise-les parfaitement.</div>
+      <div class="tip">📊 Si tu bloques sur une question : passe. Beaucoup de sous-questions sont indépendantes.</div>
+      <div class="tip red">❌ Ne jamais écrire "= ∞" — écrire "tend vers +∞" ou "diverge vers +∞".</div>
+      <div class="tip gold">⭐ Ce qui fait la différence : rédiger une récurrence complète et une démonstration par l'absurde.</div>
+    </div>
+  </div>`;
+}
+function buildSVTMethods(){
+  return `
+  <div class="sub-section">
+    <div class="ss-head" onclick="ssToggle('svt-meth')"><span>🌿 Méthode pour les 2 épreuves écrites</span><span>▾</span></div>
+    <div class="ss-body" id="ssb-svt-meth">
+      <div class="tip gold">⭐ Le bac SVT : <strong>Partie 1</strong> (QCM + questions courtes) et <strong>Partie 2</strong> (exercice de synthèse). Méthodes différentes pour chacune.</div>
+      <h5>Partie 1 — Restitution</h5>
+      <ul class="steps">
+        <li>Répondre en <strong>phrases complètes</strong> avec vocabulaire scientifique précis.</li>
+        <li>Schémas : titre, légendes, flèches. Un schéma sans légende ne vaut rien.</li>
+        <li>"Expliquer le mécanisme" ≠ "Nommer les étapes" — adapte ton niveau de détail.</li>
+      </ul>
+      <h5>Partie 2 — Raisonnement scientifique</h5>
+      <ul class="steps">
+        <li><strong>Introduction :</strong> pose le problème scientifique soulevé par les documents.</li>
+        <li><strong>Exploitation :</strong> cite chaque document ("D'après le document 1…"), extrais les infos, ANALYSE ne décris pas.</li>
+        <li><strong>Lien avec le cours :</strong> "Ce résultat s'explique par le fait que…"</li>
+        <li><strong>Conclusion :</strong> réponds au problème posé, ouvre si possible sur une limite.</li>
+      </ul>
+      <div class="tip red">⚠️ Erreur la plus pénalisante : décrire les documents sans les analyser. "Le graphique montre une augmentation" = 0 pt.</div>
+      <h5>12 chapitres :</h5>
+      <div class="badge-grid">${SVT_CHAPS.map(c=>`<span class="badge green">${c}</span>`).join('')}</div>
+    </div>
+  </div>
+  <div class="sub-section">
+    <div class="ss-head" onclick="ssToggle('svt-cons')"><span>🎓 Conseils pour viser 16+ en SVT</span><span>▾</span></div>
+    <div class="ss-body" id="ssb-svt-cons">
+      <div class="tip green">✅ La maîtrise du vocabulaire scientifique est ce qui fait la différence entre un 12 et un 16.</div>
+      <div class="tip red">❌ Ne jamais confondre "gène" et "allèle", "chromosome" et "chromatide", "mitose" et "méiose".</div>
+      <div class="tip gold">⭐ Cite des exemples précis (espèces, expériences historiques comme Watson & Crick, Pasteur…).</div>
+    </div>
+  </div>`;
+}
+
+// ========== ORAL BODY ==========
+function buildOralBody(u){
+  const hist=u.goHistory||[];
+  return `
+  <div class="sub-section">
+    <div class="ss-head" onclick="ssToggle('go-cons')"><span>🎓 Conseils Grand Oral (profs)</span><span>▾</span></div>
+    <div class="ss-body" id="ssb-go-cons">
+      <div class="tip gold">⭐ Le Grand Oral dure 20 min : 5 min présentation + 10 min questions jury + 5 min orientation. Les 10 min de questions sont les plus discriminantes.</div>
+      <div class="tip">🗣️ Parle fort, regarde le jury, articule, respire. Fond et forme sont notés à égalité.</div>
+      <div class="tip red">⚠️ Ne mémorise pas un texte mot pour mot. Mémorise les idées clés et laisse-toi guider par la logique.</div>
+      <div class="tip green">✅ Ce qui impressionne : rebondir sur les questions avec une formule mathématique ou physique clairement expliquée.</div>
+    </div>
+  </div>
+  <div class="proj-section">
+    <div class="proj-section-title">Entraînements</div>
+    <div class="proj-list">
+      ${hist.length?hist.slice(-5).reverse().map(h=>`<div class="proj-item${h.score<16?' red':''}" onclick="openGoResult('${h.id}')"><div><div class="proj-name">${h.title}</div><div class="proj-meta">${new Date(h.date).toLocaleDateString('fr-FR')}</div></div><span class="score-badge ${h.score>=16?'ok':'bad'}">${h.score}/20</span></div>`).join(''):'<div style="color:var(--text3);font-size:.83rem;padding:.4rem 0">Aucun entraînement — commence !</div>'}
+    </div>
+    <button class="btn-add" onclick="openGoModal()" style="border-color:rgba(245,197,24,.4);color:var(--gold)">🎤 Nouvel entraînement Grand Oral</button>
+  </div>`;
+}
+
+// ========== PROJECT NEW/OPEN ==========
+function openNewProject(blockId, blockLabel){
+  const chaps=blockId==='philo'?PHILO_NOTIONS:blockId==='physique'?PHYSIQUE_CHAPS:blockId==='maths'?MATHS_CHAPS:SVT_CHAPS;
+  openModal('Nouveau projet — '+blockLabel,`
+    <div class="form-row"><label>Nom du projet</label><input type="text" id="np-title" placeholder="Ex : La conscience — chapitre 1"></div>
+    <div class="form-row"><label>${blockId==='philo'?'Notion':'Chapitre'}</label>
+      <select id="np-chapter"><option value="">-- Choisir --</option>${chaps.map(c=>`<option value="${c}">${c}</option>`).join('')}</select>
+    </div>
+    <div class="form-row"><label>Colle ton cours ici (le plus complet possible — définitions, auteurs, formules…)</label>
+      <textarea id="np-course" style="min-height:180px" placeholder="Colle ou écris ton cours ici. Plus c'est détaillé, meilleures seront les questions et la correction."></textarea>
+    </div>
+    <button class="btn-action primary btn-full mt2" onclick="createProject('${blockId}')">Créer le projet →</button>
+  `);
+}
+function createProject(blockId){
+  const title=document.getElementById('np-title').value.trim();
+  const chapter=document.getElementById('np-chapter').value;
+  const course=document.getElementById('np-course').value.trim();
+  if(!title||!chapter||!course){alert('Remplis tous les champs !');return;}
+  const id='proj_'+Date.now();
+  const u=me(); if(!u)return;
+  if(!u.projects) u.projects={};
+  u.projects[id]={id,blockId,title,chapter,course,lastVisit:Date.now(),lastScore:null,alert:false,exerciseCount:0};
+  saveMe(); closeModal(); renderDashboard(); openProject(id);
+}
+function openProject(projId){
+  const u=me(); const p=u.projects[projId]; if(!p)return;
+  p.lastVisit=Date.now(); p.alert=false; saveMe();
+  openModal(p.title, buildProjectView(p));
+}
+function deleteProject(projId){
+  if(!confirm('Supprimer ce projet définitivement ?'))return;
+  const u=me(); delete u.projects[projId]; saveMe(); closeModal(); renderDashboard();
+}
+
+// ========== PROJECT VIEW ==========
+function buildProjectView(p){
+  const hasDiss=p.blockId==='philo';
+  return `
+  <div class="tabs" id="proj-tabs">
+    <button class="tab active" onclick="switchTab('learn','${p.id}',this)">📖 Apprentissage</button>
+    <button class="tab" onclick="switchTab('exo','${p.id}',this)">📄 Exercice Bac</button>
+    ${hasDiss?`<button class="tab" onclick="switchTab('diss','${p.id}',this)">✍️ Dissertation</button>`:''}
+  </div>
+  <div id="tab-learn-${p.id}">${buildLearnTab(p)}</div>
+  <div id="tab-exo-${p.id}" style="display:none">${buildExoTab(p)}</div>
+  ${hasDiss?`<div id="tab-diss-${p.id}" style="display:none">${buildDissTab(p)}</div>`:''}`;
+}
+function switchTab(name, projId, btn){
+  ['learn','exo','diss'].forEach(t=>{ const el=document.getElementById('tab-'+t+'-'+projId); if(el) el.style.display=t===name?'block':'none'; });
+  document.querySelectorAll('#proj-tabs .tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ========== LEARNING TAB ==========
+let learnState={questions:[],idx:0,correct:0,projId:null};
+
+function buildLearnTab(p){
+  return `<div id="learn-container-${p.id}">
+    <div class="sub-section" style="margin-bottom:1rem">
+      <div class="ss-head" onclick="ssToggle('cours-${p.id}')"><span>📚 Ton cours — lis-le attentivement</span><span>▾</span></div>
+      <div class="ss-body" id="ssb-cours-${p.id}">
+        <div style="font-size:.85rem;line-height:1.85;color:var(--text2);white-space:pre-wrap;max-height:350px;overflow-y:auto">${escHtml(p.course)}</div>
+      </div>
+    </div>
+    <div class="loading" id="learn-load-${p.id}"><div class="spinner"></div>Génération des questions de compréhension…</div>
+    <div id="learn-game-${p.id}" style="display:none"></div>
+  </div>`;
+}
+function escHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+async function startLearning(projId){
+  const u=me(); const p=u.projects[projId]; if(!p)return;
+  const loadEl=document.getElementById('learn-load-'+projId);
+  const gameEl=document.getElementById('learn-game-'+projId);
+  if(!loadEl||!gameEl)return;
+  loadEl.style.display='flex'; gameEl.style.display='none';
+  const prompt='Tu es un professeur de terminale exigeant. À partir du cours sur "'+p.chapter+'", génère 8 questions de compréhension progressives (du plus simple au plus complexe). Les questions testent la VRAIE compréhension, pas la mémorisation. Ex: "Pourquoi X implique Y ?", "Quelle est la différence fondamentale entre X et Y ?", "Explique avec tes propres mots ce que signifie X."\n\nCOURS :\n'+p.course.slice(0,3500)+'\n\nRéponds UNIQUEMENT en JSON valide :\n{"questions":[{"q":"question","attendu":"type de réponse attendue","points":["point clé 1","point clé 2"]}]}';
+  try{
+    const res=await callAI(prompt);
+    const clean=res.replace(/```json|```/g,'').trim();
+    const json=JSON.parse(clean);
+    learnState={questions:json.questions||[],idx:0,correct:0,projId};
+    loadEl.style.display='none'; gameEl.style.display='block';
+    renderLearnGame(projId);
+  } catch(e){
+    loadEl.innerHTML='<span style="color:var(--red)">Erreur: '+e.message+'</span>';
+  }
+}
+function renderLearnGame(projId){
+  const {questions,idx,correct}=learnState;
+  const gameEl=document.getElementById('learn-game-'+projId);
+  if(!gameEl)return;
+  if(idx>=questions.length){ renderLearnResult(projId); return; }
+  const q=questions[idx];
+  const pct=Math.round((idx/questions.length)*100);
+  gameEl.innerHTML='';
+  // Progress
+  const prog=document.createElement('div'); prog.className='fc-progress';
+  prog.innerHTML='<div style="display:flex;justify-content:space-between;font-size:.8rem;color:var(--text2)"><span>Question '+(idx+1)+'/'+questions.length+'</span><span style="color:var(--green)">✓ '+correct+' comprises</span></div><div class="fc-progress-bar"><div class="fc-progress-fill" style="width:'+pct+'%"></div></div>';
+  gameEl.appendChild(prog);
+  // Question card
+  const card=document.createElement('div'); card.className='q-card';
+  const ql=document.createElement('div'); ql.className='q-label'; ql.textContent='Question de compréhension';
+  const qt=document.createElement('div'); qt.className='q-text'; qt.textContent=q.q;
+  const ta=document.createElement('textarea'); ta.className='answer-ta'; ta.placeholder='Réponds avec tes propres mots — explique, argumente, développe…';
+  card.appendChild(ql); card.appendChild(qt); card.appendChild(ta);
+  gameEl.appendChild(card);
+  // Correction zone
+  const corrZone=document.createElement('div'); corrZone.id='learn-corr-'+projId;
+  gameEl.appendChild(corrZone);
+  // Validate btn
+  const btn=document.createElement('button'); btn.className='btn-action primary btn-full mt2'; btn.textContent='Valider ma réponse →';
+  btn.onclick=function(){ evalLearnAnswer(projId,ta,q,false); };
+  gameEl.appendChild(btn);
+}
+async function evalLearnAnswer(projId,taEl,q,isRetry){
+  const reponse=taEl.value.trim();
+  if(!reponse){alert('Écris une réponse d\'abord !');return;}
+  const corrEl=document.getElementById('learn-corr-'+projId);
+  corrEl.innerHTML='<div class="loading"><div class="spinner"></div>Évaluation…</div>';
+  const prompt='Tu es un professeur sévère. L\'élève répond à une question de compréhension.\nQUESTION : '+q.q+'\nRÉPONSE ATTENDUE : '+q.attendu+'\nPOINTS CLÉS : '+(q.points||[]).join(', ')+'\nRÉPONSE DE L\'ÉLÈVE : '+reponse+'\nÉvalue si l\'élève a vraiment compris. JSON uniquement : {"compris":true/false,"feedback":"2-3 phrases précises","manque":"ce qui manque si pas compris","bravo":"si compris"}';
+  try{
+    const res=await callAI(prompt);
+    const c=JSON.parse(res.replace(/```json|```/g,'').trim());
+    corrEl.innerHTML='';
+    const box=document.createElement('div');
+    box.className='correction-box '+(c.compris?'green-border':'red-border');
+    if(c.compris){
+      if(!isRetry) learnState.correct++;
+      box.innerHTML='<div style="color:var(--green);font-weight:600;margin-bottom:.4rem">✅ Bien compris !</div><p style="font-size:.85rem;color:var(--text2)">'+c.bravo+'</p>';
+      corrEl.appendChild(box);
+      const nb=document.createElement('button'); nb.className='btn-action primary btn-full mt2'; nb.textContent='Question suivante →';
+      nb.onclick=function(){ learnState.idx++; renderLearnGame(projId); };
+      corrEl.appendChild(nb);
+    } else {
+      box.innerHTML='<div style="color:var(--red);font-weight:600;margin-bottom:.4rem">❌ Pas tout à fait…</div><p style="font-size:.85rem;color:var(--text2)">'+c.feedback+'</p>'+(c.manque?'<div class="tip red mt1">Il manquait : '+c.manque+'</div>':'');
+      const retryTA=document.createElement('textarea'); retryTA.className='answer-ta'; retryTA.style.minHeight='80px'; retryTA.placeholder='Reformule en tenant compte du feedback…'; retryTA.style.marginTop='.75rem';
+      box.appendChild(retryTA);
+      corrEl.appendChild(box);
+      const rb=document.createElement('button'); rb.className='btn-action primary btn-full mt1'; rb.textContent='Réessayer →';
+      rb.onclick=function(){ evalLearnAnswer(projId,retryTA,q,true); };
+      corrEl.appendChild(rb);
+      const skip=document.createElement('button'); skip.className='btn-action muted btn-full mt1'; skip.textContent='Passer cette question →';
+      skip.onclick=function(){ learnState.idx++; renderLearnGame(projId); };
+      corrEl.appendChild(skip);
+    }
+  } catch(e){
+    corrEl.innerHTML='';
+    const skip=document.createElement('button'); skip.className='btn-action muted btn-full'; skip.textContent='Erreur — Passer →';
+    skip.onclick=function(){ learnState.idx++; renderLearnGame(projId); };
+    corrEl.appendChild(skip);
+  }
+}
+function renderLearnResult(projId){
+  const {questions,correct}=learnState;
+  const pct=Math.round((correct/questions.length)*100);
+  const good=pct>=75;
+  const u=me(); const p=u.projects[projId]; const chapter=p?p.chapter:'ce chapitre';
+  const gameEl=document.getElementById('learn-game-'+projId);
+  gameEl.innerHTML='';
+  const res=document.createElement('div');
+  res.style.cssText='text-align:center;padding:1rem 0';
+  res.innerHTML='<div style="font-size:2rem;margin-bottom:.5rem">'+(good?'🎉':'💪')+'</div>'
+    +'<div class="note-big '+(good?'good':'bad')+'">'+correct+'/'+questions.length+'</div>'
+    +'<p style="color:var(--text2);margin:.4rem 0 1.25rem">'+pct+'% comprises</p>'
+    +'<p style="color:var(--text2);font-size:.87rem;margin-bottom:1.5rem">'+(good?'Excellent ! Tu as bien compris le cours.':'Relis le cours et recommence pour mieux comprendre.')+'</p>';
+  // Rappel actif
+  const rappelZone=document.createElement('div');
+  rappelZone.style.cssText='background:var(--card2);border:1px solid var(--border2);border-radius:var(--r);padding:1rem;text-align:left;margin-bottom:1rem';
+  rappelZone.innerHTML='<div style="font-size:.9rem;font-weight:600;margin-bottom:.4rem">🧠 Rappel actif</div>'
+    +'<div style="font-size:.82rem;color:var(--text2);margin-bottom:.75rem">Ferme ton cours et écris tout ce que tu retiens sur <strong>'+chapter+'</strong>. Force ta mémoire !</div>';
+  const rappelTA=document.createElement('textarea'); rappelTA.className='answer-ta'; rappelTA.style.minHeight='140px'; rappelTA.placeholder='Écris tout ce dont tu te souviens — définitions, auteurs, exemples, formules, distinctions…';
+  const rappelBtn=document.createElement('button'); rappelBtn.className='btn-action primary btn-full mt2'; rappelBtn.textContent='Comparer avec mon cours →';
+  const rappelCorr=document.createElement('div');
+  rappelBtn.onclick=function(){ corrigerRappel(projId,rappelTA,rappelCorr); };
+  rappelZone.appendChild(rappelTA); rappelZone.appendChild(rappelBtn); rappelZone.appendChild(rappelCorr);
+  res.appendChild(rappelZone);
+  const reload=document.createElement('button'); reload.className='btn-action muted btn-full'; reload.textContent='🔄 Recommencer les questions';
+  reload.onclick=function(){ startLearning(projId); };
+  res.appendChild(reload);
+  gameEl.appendChild(res);
+}
+async function corrigerRappel(projId,taEl,corrEl){
+  const u=me(); const p=u.projects[projId];
+  const rappel=taEl.value.trim();
+  if(!rappel){alert('Écris quelque chose !');return;}
+  corrEl.innerHTML='<div class="loading"><div class="spinner"></div>Comparaison avec ton cours…</div>';
+  const prompt='Compare ce que l\'élève a retenu avec le cours original. Objectif 16+, sois très précis et sévère.\nCOURS ORIGINAL : '+p.course.slice(0,3000)+'\nCE QUE L\'ÉLÈVE A RETENU : '+rappel+'\nJSON sans markdown : {"score":number(sur 20),"bien_retenu":"ce qui est correct","oublie":"points importants manquants","inexact":"mal compris","conseil":"comment mieux retenir"}';
+  try{
+    const res=await callAI(prompt);
+    const c=JSON.parse(res.replace(/```json|```/g,'').trim());
+    p.lastScore=c.score; if(c.score<16) p.alert=true; saveMe(); renderDashboard();
+    corrEl.innerHTML='';
+    const box=document.createElement('div');
+    box.className='correction-box '+(c.score>=16?'green-border':c.score>=12?'orange-border':'red-border');
+    box.innerHTML='<div class="note-big '+(c.score>=16?'good':c.score>=12?'mid':'bad')+'">'+c.score+'/20</div>'
+      +(c.bien_retenu?'<div class="tip green mt1"><strong>✅ Bien retenu :</strong> '+c.bien_retenu+'</div>':'')
+      +(c.inexact?'<div class="tip mt1"><strong>⚠️ À corriger :</strong> '+c.inexact+'</div>':'')
+      +(c.oublie?'<div class="tip red mt1"><strong>❌ Points oubliés :</strong> '+c.oublie+'</div>':'')
+      +(c.conseil?'<div class="tip gold mt1"><strong>💡 Conseil :</strong> '+c.conseil+'</div>':'');
+    corrEl.appendChild(box);
+  } catch(e){ corrEl.innerHTML='<p style="color:var(--red);font-size:.85rem">Erreur. Réessaie.</p>'; }
+}
+
+// ========== EXO BAC TAB ==========
+function buildExoTab(p){
+  const isPhilo=p.blockId==='philo';
+  return `<div>
+    <div style="font-size:.87rem;color:var(--text2);margin-bottom:1rem;line-height:1.6"><strong style="color:var(--text)">Exercice type bac</strong> — Colle ici un sujet officiel (Annabac, sujetdebac.com…). Utilise un sujet <strong>différent</strong> à chaque tentative pour ne pas apprendre par cœur.<br><span style="color:var(--text3);font-size:.78rem">Tentatives : ${p.exerciseCount||0}</span></div>
+    <div class="form-row"><label>Sujet officiel (colle-le ici)</label>
+      <textarea id="exo-subj-${p.id}" style="min-height:150px" placeholder="Colle ici le texte du sujet bac officiel…">${escHtml(p.lastSubject||'')}</textarea>
+    </div>
+    <div class="form-row"><label>Ta réponse complète (rédige comme sur ta copie)</label>
+      <textarea id="exo-ans-${p.id}" style="min-height:220px" placeholder="${isPhilo?'Rédige ta réponse complète — développe chaque argument, cite des auteurs, construis ton raisonnement…':'Réponds à chaque question — pose les formules, justifie chaque étape, conclus chaque partie…'}"></textarea>
+    </div>
+    <button class="btn-action primary btn-full" onclick="submitExo('${p.id}')">Corriger mon travail →</button>
+    <div id="exo-corr-${p.id}"></div>
+  </div>`;
+}
+async function submitExo(projId){
+  const u=me(); const p=u.projects[projId];
+  const subj=document.getElementById('exo-subj-'+projId).value.trim();
+  const ans=document.getElementById('exo-ans-'+projId).value.trim();
+  if(!subj){alert('Colle d\'abord le sujet !');return;}
+  if(!ans){alert('Rédige ta réponse !');return;}
+  p.lastSubject=subj; p.lastAnswer=ans; p.exerciseCount=(p.exerciseCount||0)+1; saveMe();
+  const corrEl=document.getElementById('exo-corr-'+projId);
+  corrEl.innerHTML='<div class="loading"><div class="spinner"></div>Correction en cours — sévérité maximale…</div>';
+  const isPhilo=p.blockId==='philo';
+  const prompt='Tu es un correcteur de bac TRÈS SÉVÈRE. Objectif élève : mention TRÈS BIEN (≥16/20).\n\nMATIÈRE : '+p.blockId+' — '+p.chapter+'\nCOURS : '+p.course.slice(0,600)+'\n\nSUJET :\n'+subj+'\n\nRÉPONSE DE L\'ÉLÈVE :\n'+ans+'\n\n'+(isPhilo?'CRITÈRES PHILO : Problématique (3pts), Structure plan (3pts), Développement arguments (6pts), Utilisation auteurs (4pts), Rédaction style (2pts), Conclusion (2pts). INSISTE PARTICULIÈREMENT sur le développement des idées et la rédaction.':'CRITÈRES SCIENCES : Connaissances (6pts), Démarche/raisonnement (5pts), Formules et lois (4pts), Rédaction et justifications (3pts), Présentation (2pts). TRÈS EXIGEANT sur la rédaction.')+'\n\nJSON : {"note":number,"points_forts":"...","points_faibles":"...","redaction":"critique détaillée de la rédaction","conseils":["conseil 1","conseil 2","conseil 3","conseil 4"],"pour_16":"ce qu\'il faut absolument améliorer pour atteindre 16"}';
+  try{
+    const res=await callAI(prompt);
+    const c=JSON.parse(res.replace(/```json|```/g,'').trim());
+    p.lastScore=c.note; if(c.note<16) p.alert=true; saveMe(); renderDashboard();
+    corrEl.innerHTML='';
+    const box=document.createElement('div');
+    box.className='correction-box '+(c.note>=16?'green-border':c.note>=12?'orange-border':'red-border');
+    box.innerHTML='<div class="note-big '+(c.note>=16?'good':c.note>=12?'mid':'bad')+'">'+c.note+'/20</div>'
+      +'<div style="text-align:center;font-size:.83rem;color:var(--text2);margin-bottom:1.25rem">'+(c.note>=16?'🎉 Mention Très Bien !':c.note>=12?'📈 Encore un effort pour 16':'🔴 Ce projet doit être retravaillé')+'</div>'
+      +(c.points_forts?'<div class="tip green mt1"><strong>✅ Points forts :</strong> '+c.points_forts+'</div>':'')
+      +(c.points_faibles?'<div class="tip red mt1"><strong>❌ Points faibles :</strong> '+c.points_faibles+'</div>':'')
+      +(c.redaction?'<div class="tip mt1"><strong>✏️ Rédaction :</strong> '+c.redaction+'</div>':'')
+      +(c.conseils&&c.conseils.length?'<div style="margin-top:.75rem"><div style="font-size:.83rem;font-weight:600;margin-bottom:.3rem">📋 Conseils prioritaires :</div><ul class="steps">'+c.conseils.map(x=>'<li>'+x+'</li>').join('')+'</ul></div>':'')
+      +(c.pour_16?'<div class="tip gold mt1"><strong>🎯 Pour atteindre 16 :</strong> '+c.pour_16+'</div>':'');
+    corrEl.appendChild(box);
+  } catch(e){ corrEl.innerHTML='<p style="color:var(--red);font-size:.85rem;margin-top:1rem">Erreur de correction. Réessaie.</p>'; }
+}
+
+// ========== DISSERTATION TAB (PHILO) ==========
+function buildDissTab(p){
+  return `<div>
+    <div style="font-size:.87rem;color:var(--text2);margin-bottom:1.25rem;line-height:1.6">Entraîne-toi sur une question philosophique liée à <strong style="color:var(--text)">${p.chapter}</strong>. La correction sera particulièrement sévère sur le développement et la rédaction philosophique.</div>
+    <div id="diss-q-${p.id}">
+      <button class="btn-action primary" onclick="loadDissQuestion('${p.id}')">Générer une question philosophique →</button>
+    </div>
+    <div id="diss-form-${p.id}" style="display:none">
+      <div class="form-row mt2"><label>Ta problématique</label><input type="text" id="diss-pb-${p.id}" placeholder="Formule ta problématique philosophique…"></div>
+      <div class="form-row"><label>Ton plan (I, II, III avec sous-parties)</label>
+        <textarea id="diss-plan-${p.id}" style="min-height:120px" placeholder="I. Thèse : …&#10;  1. …&#10;  2. …&#10;II. Antithèse : …&#10;III. Dépassement : …"></textarea>
+      </div>
+      <div class="form-row"><label>Ta grande partie développée (rédige comme en vrai — minimum 3 paragraphes argumentés avec auteurs)</label>
+        <textarea id="diss-dev-${p.id}" style="min-height:260px" placeholder="Développe ta grande partie. Argumente, cite des auteurs avec leurs thèses, donne des exemples et analyse-les. Ne te contente pas de lister des idées — développe chaque argument en plusieurs phrases."></textarea>
+      </div>
+      <button class="btn-action primary btn-full mt2" onclick="submitDiss('${p.id}')">Soumettre pour correction →</button>
+      <div id="diss-corr-${p.id}"></div>
+    </div>
+  </div>`;
+}
+async function loadDissQuestion(projId){
+  const u=me(); const p=u.projects[projId];
+  const qZone=document.getElementById('diss-q-'+projId);
+  qZone.innerHTML='<div class="loading"><div class="spinner"></div>Génération de la question…</div>';
+  const prompt='Génère une question de dissertation philosophique de terminale sur la notion "'+p.chapter+'". La question doit être authentiquement philosophique, pas une simple question de cours, et permettre un plan dialectique en 3 parties. Réponds UNIQUEMENT avec la question, rien d\'autre.';
+  try{
+    const q=await callAI(prompt);
+    p.currentDissQ=q.trim(); saveMe();
+    qZone.innerHTML='<div class="tip" style="border-color:var(--pink);margin-bottom:1rem"><strong style="color:var(--pink)">Question philosophique :</strong><br><span style="font-size:1.02rem;color:var(--text);font-weight:500">'+escHtml(q.trim())+'</span></div>';
+    document.getElementById('diss-form-'+projId).style.display='block';
+  } catch(e){ qZone.innerHTML='<p style="color:var(--red)">Erreur. Réessaie.</p>'; }
+}
+async function submitDiss(projId){
+  const u=me(); const p=u.projects[projId];
+  const pb=document.getElementById('diss-pb-'+projId).value.trim();
+  const plan=document.getElementById('diss-plan-'+projId).value.trim();
+  const dev=document.getElementById('diss-dev-'+projId).value.trim();
+  if(!pb||!plan||!dev){alert('Remplis tous les champs !');return;}
+  const corrEl=document.getElementById('diss-corr-'+projId);
+  corrEl.innerHTML='<div class="loading"><div class="spinner"></div>Correction philosophique — jugement sévère garanti…</div>';
+  const prompt='Tu es un professeur de philosophie de terminale TRÈS SÉVÈRE. Objectif : 16+/20. Sois impitoyable sur le développement des idées et la rédaction.\n\nNOTION : '+p.chapter+'\nQUESTION : '+(p.currentDissQ||'non précisée')+'\nCOURS : '+p.course.slice(0,500)+'\n\nPROBLÉMATIQUE : '+pb+'\nPLAN : '+plan+'\nGRANDE PARTIE DÉVELOPPÉE : '+dev+'\n\nJSON : {"note":number,"qualite_pb":"...","qualite_plan":"...","critique_redaction":"critique TRÈS détaillée du développement et de la rédaction — c\'est la priorité","auteurs":"bilan utilisation auteurs","points_positifs":"...","ameliorations":["...","...","...","..."],"pour_16":"..."}';
+  try{
+    const res=await callAI(prompt);
+    const c=JSON.parse(res.replace(/```json|```/g,'').trim());
+    p.lastScore=c.note; if(c.note<16) p.alert=true; saveMe(); renderDashboard();
+    corrEl.innerHTML='';
+    const box=document.createElement('div');
+    box.className='correction-box '+(c.note>=16?'green-border':c.note>=12?'orange-border':'red-border');
+    box.innerHTML='<div class="note-big '+(c.note>=16?'good':c.note>=12?'mid':'bad')+'">'+c.note+'/20</div>'
+      +(c.qualite_pb?'<div class="tip mt1"><strong>Problématique :</strong> '+c.qualite_pb+'</div>':'')
+      +(c.qualite_plan?'<div class="tip mt1"><strong>Plan :</strong> '+c.qualite_plan+'</div>':'')
+      +(c.critique_redaction?'<div class="tip red mt1"><strong>✏️ Rédaction & développement (PRIORITÉ) :</strong><br>'+c.critique_redaction+'</div>':'')
+      +(c.auteurs?'<div class="tip mt1"><strong>Auteurs :</strong> '+c.auteurs+'</div>':'')
+      +(c.points_positifs?'<div class="tip green mt1"><strong>✅ Points positifs :</strong> '+c.points_positifs+'</div>':'')
+      +(c.ameliorations&&c.ameliorations.length?'<div style="margin-top:.75rem"><div style="font-size:.83rem;font-weight:600;margin-bottom:.3rem">Améliorations :</div><ul class="steps">'+c.ameliorations.map(a=>'<li>'+a+'</li>').join('')+'</ul></div>':'')
+      +(c.pour_16?'<div class="tip gold mt1"><strong>🎯 Pour atteindre 16 :</strong> '+c.pour_16+'</div>':'');
+    corrEl.appendChild(box);
+  } catch(e){ corrEl.innerHTML='<p style="color:var(--red);font-size:.85rem;margin-top:1rem">Erreur. Réessaie.</p>'; }
+}
+
+// ========== GRAND ORAL ==========
+let goState={transcript:'',questions:[],qIdx:0,scores:[],timer:null,secs:0,recognition:null};
+
+function buildGoEntrainement(){
+  return `
+  <div>
+    <div class="form-row">
+      <label>📋 Ton sujet / question de départ</label>
+      <input type="text" id="go-sujet" placeholder="Ex: Comment les algorithmes transforment-ils notre rapport à l'information ?">
+    </div>
+    <div style="font-size:.87rem;color:var(--text2);margin-bottom:.6rem">Colle ton exposé ou utilise le dictaphone :</div>
+    <textarea id="go-expose" class="answer-ta" style="min-height:120px;margin-bottom:.75rem" placeholder="Colle ton exposé ici, ou utilise le dictaphone ci-dessous pour parler directement…"></textarea>
+    <div class="rec-controls">
+      <div class="timer" id="go-timer">0:00</div>
+      <button class="btn-rec start" id="go-start" onclick="startRec('expo')">🎤 Dicter</button>
+      <button class="btn-rec stop" id="go-stop" style="display:none" onclick="stopRec()">⏹ Arrêter</button>
+      <div class="rec-ind" id="go-ind" style="display:none"><div class="rec-dot"></div>En cours…</div>
+    </div>
+    <div class="transcript-box" id="go-tr" style="display:none"></div>
+    <button class="btn-action primary btn-full mt3" onclick="evalGoExpose()">Évaluer mon exposé et générer les questions →</button>
+    <div id="go-eval-zone"></div>
+  </div>`;
+}
+function startRec(target){
+  if(!('SpeechRecognition' in window||'webkitSpeechRecognition' in window)){
+    alert('Dictaphone non disponible sur ce navigateur. Utilise Chrome ou Edge. Tu peux aussi coller ton texte directement.');
+    return;
+  }
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  const rec=new SR(); rec.lang='fr-FR'; rec.continuous=true; rec.interimResults=true;
+  let final='';
+  const trEl=document.getElementById('go-tr');
+  const startBtn=document.getElementById('go-start');
+  const stopBtn=document.getElementById('go-stop');
+  const ind=document.getElementById('go-ind');
+  const timerEl=document.getElementById('go-timer');
+  startBtn.style.display='none'; stopBtn.style.display='flex'; ind.style.display='flex';
+  if(trEl){trEl.style.display='block'; trEl.textContent='…';}
+  goState.secs=0;
+  goState.timer=setInterval(()=>{ goState.secs++; const m=Math.floor(goState.secs/60),s=goState.secs%60; if(timerEl) timerEl.textContent=m+':'+(s<10?'0':'')+s; },1000);
+  rec.onresult=e=>{ let interim=''; for(let i=e.resultIndex;i<e.results.length;i++){ if(e.results[i].isFinal) final+=e.results[i][0].transcript+' '; else interim+=e.results[i][0].transcript; } if(trEl) trEl.textContent=final+interim; };
+  rec.onerror=()=>{};
+  rec.start();
+  goState.recognition=rec;
+  stopBtn.onclick=function(){
+    rec.stop(); clearInterval(goState.timer);
+    startBtn.style.display='flex'; stopBtn.style.display='none'; ind.style.display='none';
+    goState.transcript=final;
+    const exposeEl=document.getElementById('go-expose');
+    if(exposeEl&&final) exposeEl.value=final;
+  };
+}
+function stopRec(){}
+
+async function evalGoExpose(){
+  const exposeText=document.getElementById('go-expose').value.trim()||goState.transcript;
+  const sujet=document.getElementById('go-sujet').value.trim();
+  if(!exposeText){alert('Soumets ton exposé d\'abord !');return;}
+  const zone=document.getElementById('go-eval-zone');
+  zone.innerHTML='<div class="loading"><div class="spinner"></div>Évaluation de ton exposé…</div>';
+  const prompt='Tu es un jury de Grand Oral de terminale sévère. Objectif élève : 16+/20.\n\nSUJET : '+(sujet||'Non précisé')+'\nEXPOSÉ :\n'+exposeText+'\n\nÉvalue l\'exposé (SANS les questions du jury) et génère 5 questions difficiles de jury.\n\nJSON : {"note_expose":number,"critique":"critique détaillée de l\'exposé","points_forts":"...","ameliorations":["...","...","..."],"questions":[{"q":"question","attendu":"ce qu\'on attend en 1-2 phrases"}]}';
+  try{
+    const res=await callAI(prompt);
+    const data=JSON.parse(res.replace(/```json|```/g,'').trim());
+    goState.questions=data.questions||[]; goState.qIdx=0; goState.scores=[];
+    const u=me(); const goId='go_'+Date.now();
+    u.goHistory.push({id:goId,title:sujet||'Grand Oral',date:Date.now(),score:data.note_expose,expose:exposeText,questions:goState.questions});
+    saveMe(); renderDashboard();
+    zone.innerHTML='';
+    const box=document.createElement('div');
+    box.className='correction-box '+(data.note_expose>=16?'green-border':data.note_expose>=12?'orange-border':'red-border');
+    box.innerHTML='<div class="note-big '+(data.note_expose>=16?'good':data.note_expose>=12?'mid':'bad')+'">'+data.note_expose+'/20</div>'
+      +'<div style="text-align:center;font-size:.82rem;color:var(--text2);margin-bottom:1rem">Note de l\'exposé (hors questions jury)</div>'
+      +(data.critique?'<div class="tip mt1">'+data.critique+'</div>':'')
+      +(data.points_forts?'<div class="tip green mt1"><strong>✅ Points forts :</strong> '+data.points_forts+'</div>':'')
+      +(data.ameliorations&&data.ameliorations.length?'<div class="tip red mt1"><strong>À améliorer :</strong><ul style="margin:.3rem 0 0 1rem">'+data.ameliorations.map(a=>'<li style="font-size:.85rem;margin:.2rem 0">'+a+'</li>').join('')+'</ul></div>':'');
+    zone.appendChild(box);
+    // Questions jury
+    const qSection=document.createElement('div');
+    qSection.style.cssText='margin-top:1.5rem;padding:1rem;background:var(--card2);border:1px solid var(--border2);border-radius:var(--r)';
+    qSection.innerHTML='<div style="font-weight:600;margin-bottom:1rem">🎯 Questions du jury — réponds au dictaphone</div>';
+    const qDisp=document.createElement('div'); qDisp.id='go-q-disp';
+    qSection.appendChild(qDisp);
+    zone.appendChild(qSection);
+    renderGoQuestion();
+  } catch(e){ zone.innerHTML='<p style="color:var(--red);font-size:.85rem">Erreur. Réessaie.</p>'; }
+}
+function renderGoQuestion(){
+  const qDisp=document.getElementById('go-q-disp'); if(!qDisp)return;
+  if(goState.qIdx>=goState.questions.length){
+    const avg=goState.scores.length?Math.round(goState.scores.reduce((a,b)=>a+b,0)/goState.scores.length):0;
+    qDisp.innerHTML='<div class="note-big '+(avg>=16?'good':avg>=12?'mid':'bad')+'">'+avg+'/20</div><p style="color:var(--text2);text-align:center">Moyenne sur les questions du jury</p>';
+    return;
+  }
+  const q=goState.questions[goState.qIdx];
+  qDisp.innerHTML='';
+  const qCard=document.createElement('div'); qCard.className='q-card';
+  qCard.innerHTML='<div class="q-label">Question '+(goState.qIdx+1)+'/'+goState.questions.length+'</div><div class="q-text">'+escHtml(q.q)+'</div>';
+  qDisp.appendChild(qCard);
+  const hint=document.createElement('div'); hint.style.cssText='font-size:.8rem;color:var(--text3);margin-bottom:.5rem';  hint.textContent='Réponds au dictaphone ou par écrit :';
+  qDisp.appendChild(hint);
+  const recControls=document.createElement('div'); recControls.className='rec-controls';
+  const timer2=document.createElement('div'); timer2.className='timer'; timer2.id='go-q-timer'; timer2.textContent='0:00';
+  const startBtn2=document.createElement('button'); startBtn2.className='btn-rec start'; startBtn2.textContent='🎤 Répondre';
+  const stopBtn2=document.createElement('button'); stopBtn2.className='btn-rec stop'; stopBtn2.style.display='none'; stopBtn2.textContent='⏹ Arrêter';
+  const ind2=document.createElement('div'); ind2.className='rec-ind'; ind2.style.display='none'; ind2.innerHTML='<div class="rec-dot"></div>En cours…';
+  recControls.appendChild(timer2); recControls.appendChild(startBtn2); recControls.appendChild(stopBtn2); recControls.appendChild(ind2);
+  qDisp.appendChild(recControls);
+  const tr2=document.createElement('div'); tr2.className='transcript-box'; tr2.style.display='none';
+  qDisp.appendChild(tr2);
+  const ta=document.createElement('textarea'); ta.className='answer-ta mt1'; ta.placeholder='Ou tape ta réponse ici…';
+  qDisp.appendChild(ta);
+  const corrQ=document.createElement('div');
+  qDisp.appendChild(corrQ);
+  let finalQ='';
+  startBtn2.onclick=function(){
+    if(!('SpeechRecognition' in window||'webkitSpeechRecognition' in window)){alert('Utilise Chrome. Tu peux aussi écrire ci-dessous.');return;}
+    const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    const rec=new SR(); rec.lang='fr-FR'; rec.continuous=true; rec.interimResults=true;
+    startBtn2.style.display='none'; stopBtn2.style.display='flex'; ind2.style.display='flex'; tr2.style.display='block';
+    let secs=0; const t=setInterval(()=>{secs++;const m=Math.floor(secs/60),s=secs%60;timer2.textContent=m+':'+(s<10?'0':'')+s;},1000);
+    rec.onresult=e=>{let interim='';for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)finalQ+=e.results[i][0].transcript+' ';else interim+=e.results[i][0].transcript;}tr2.textContent=finalQ+interim;};
+    rec.onerror=()=>{};
+    rec.start();
+    stopBtn2.onclick=function(){rec.stop();clearInterval(t);startBtn2.style.display='flex';stopBtn2.style.display='none';ind2.style.display='none';if(finalQ) ta.value=finalQ; gradeGoAnswer(ta,q,corrQ);};
+  };
+  const submitBtn=document.createElement('button'); submitBtn.className='btn-action primary btn-full mt2'; submitBtn.textContent='Valider cette réponse →';
+  submitBtn.onclick=function(){gradeGoAnswer(ta,q,corrQ);};
+  qDisp.appendChild(submitBtn);
+}
+async function gradeGoAnswer(taEl,q,corrEl){
+  const ans=taEl.value.trim(); if(!ans){alert('Réponds d\'abord !');return;}
+  corrEl.innerHTML='<div class="loading"><div class="spinner"></div>Correction…</div>';
+  const prompt='Tu es un jury de Grand Oral sévère.\nQuestion : '+q.q+'\nAttendu : '+q.attendu+'\nRéponse : '+ans+'\nJSON : {"note":number(sur 20),"feedback":"3-4 phrases précises","manquait":"ce qui manquait"}';
+  try{
+    const res=await callAI(prompt);
+    const c=JSON.parse(res.replace(/```json|```/g,'').trim());
+    goState.scores.push(c.note);
+    corrEl.innerHTML='';
+    const box=document.createElement('div');
+    box.className='correction-box '+(c.note>=16?'green-border':c.note>=12?'orange-border':'red-border');
+    box.style.marginBottom='1rem';
+    box.innerHTML='<div style="display:flex;align-items:center;gap:1rem;margin-bottom:.5rem"><span style="font-size:1.5rem;font-weight:700;font-family:Syne,sans-serif;color:'+(c.note>=16?'var(--green)':c.note>=12?'var(--gold)':'var(--red)')+'">'+c.note+'/20</span><span style="font-size:.85rem;color:var(--text2)">'+c.feedback+'</span></div>'+(c.manquait?'<div class="tip red">'+c.manquait+'</div>':'');
+    const nb=document.createElement('button'); nb.className='btn-action primary mt2'; nb.textContent='Question suivante →';
+    nb.onclick=function(){goState.qIdx++;renderGoQuestion();};
+    corrEl.appendChild(box); corrEl.appendChild(nb);
+  } catch(e){ corrEl.innerHTML='<p style="color:var(--red);font-size:.85rem">Erreur.</p>'; }
+}
+function openGoModal(){
+  goState={transcript:'',questions:[],qIdx:0,scores:[],timer:null,secs:0,recognition:null};
+  openModal('🎤 Grand Oral — Entraînement', buildGoEntrainement());
+}
+function openGoResult(goId){
+  const u=me(); const h=(u.goHistory||[]).find(x=>x.id===goId); if(!h)return;
+  openModal('Grand Oral — '+h.title,
+    '<div class="note-big '+(h.score>=16?'good':h.score>=12?'mid':'bad')+'">'+h.score+'/20</div>'
+    +'<div style="margin-top:1rem;font-size:.87rem;color:var(--text2)">Exposé :</div>'
+    +'<div class="transcript-box" style="display:block;margin-top:.5rem">'+(h.expose||'—')+'</div>'
+    +(h.questions&&h.questions.length?'<div style="margin-top:1rem;font-size:.87rem;font-weight:600">Questions jury :</div><div>'+h.questions.map(q=>'<div class="q-card mt1"><div class="q-label">Q</div><div style="font-size:.88rem">'+escHtml(q.q)+'</div></div>').join('')+'</div>':'')
+  );
+}
+
+// ========== MODAL ==========
+function openModal(title, html){
+  document.getElementById('modal-title').textContent=title;
+  document.getElementById('modal-body').innerHTML=html;
+  document.getElementById('modal-bg').classList.add('open');
+  // Auto-start learning if project modal
+  setTimeout(()=>{
+    const u=me(); if(!u)return;
+    const p=Object.values(u.projects||{}).find(pr=>pr.title===title);
+    if(p){
+      const loadEl=document.getElementById('learn-load-'+p.id);
+      if(loadEl) startLearning(p.id);
+    }
+  },100);
+}
+function closeModal(){ document.getElementById('modal-bg').classList.remove('open'); document.getElementById('modal-body').innerHTML=''; }
+
+// ========== MOTEUR LOCAL AVANCÉ ==========
+
+// Analyse profonde du cours
+function analyseCours(course, blockId){
+  const isPhilo = blockId==='philo';
+  const isSci = ['physique','maths','svt'].includes(blockId);
+  
+  // Extraire auteurs (noms propres suivis de contexte philosophique/scientifique)
+  const auteurRegex = /\b(Kant|Platon|Descartes|Sartre|Hegel|Nietzsche|Freud|Marx|Aristote|Rousseau|Locke|Hume|Berkeley|Spinoza|Leibniz|Bergson|Merleau-Ponty|Husserl|Newton|Einstein|Darwin|Mendel|Pasteur|Watson|Crick|Lavoisier)\b/gi;
+  const auteurs = [...new Set((course.match(auteurRegex)||[]).map(a=>a.toLowerCase()))];
+  
+  // Extraire définitions (patterns : "X est...", "X désigne...", "on appelle X...")
+  const defRegex = /([A-Za-zéèêëàâùûîïôç\s]{3,30})\s+(?:est|désigne|consiste|signifie|définit|c'est)\s+([^.!?]{10,100})/gi;
+  const definitions = [];
+  let m;
+  while((m=defRegex.exec(course))!==null) definitions.push({terme:m[1].trim(), def:m[2].trim()});
+  
+  // Extraire formules/lois (pour sciences)
+  const formuleRegex = /\b([A-Z]\s*[=<>]\s*[^,.\n]{3,30})/g;
+  const formules = isSci ? [...new Set((course.match(formuleRegex)||[]))] : [];
+  
+  // Extraire concepts clés (mots importants répétés)
+  const words = course.toLowerCase().split(/\W+/).filter(w=>w.length>5);
+  const freq = {};
+  words.forEach(w=>freq[w]=(freq[w]||0)+1);
+  const conceptsCles = Object.entries(freq).filter(([w,c])=>c>=2).sort((a,b)=>b[1]-a[1]).slice(0,15).map(([w])=>w);
+  
+  // Extraire distinctions (A vs B, différence entre A et B)
+  const distRegex = /(?:différence|distinction|oppose|contrairement|tandis que|alors que)[^.!?]{5,100}/gi;
+  const distinctions = (course.match(distRegex)||[]).slice(0,5);
+  
+  // Extraire exemples
+  const exempleRegex = /(?:par exemple|exemple\s*:|ainsi|notamment|comme par exemple)[^.!?]{5,80}/gi;
+  const exemples = (course.match(exempleRegex)||[]).slice(0,5);
+  
+  return {auteurs, definitions, formules, conceptsCles, distinctions, exemples};
+}
+
+// Génère des questions précises depuis le cours
+function genQuestionsFromCourse(course, chapter, blockId){
+  const isPhilo = blockId==='philo';
+  const analyse = analyseCours(course, blockId);
+  const questions = [];
+  
+  // Questions sur les définitions trouvées
+  analyse.definitions.slice(0,3).forEach(d=>{
+    questions.push({
+      q: "Definis precisement \""+d.terme+"\" tel que ca apparait dans le cours sur "+chapter+". Ne te contente pas d'une paraphrase — donne une definition precise avec le vocabulaire du cours.",
+      attendu: "Definition precise : "+d.def.slice(0,80),
+      points: d.terme.split(' ').filter(w=>w.length>3),
+      coursRef: d.def
+    });
+  });
+  
+  // Questions sur les auteurs trouvés
+  analyse.auteurs.slice(0,2).forEach(a=>{
+    const auteurCap = a.charAt(0).toUpperCase()+a.slice(1);
+    questions.push({
+      q: "Quelle est la these ou la position de "+auteurCap+" sur la notion de "+chapter+" ? Explique en quoi elle repond au probleme pose.",
+      attendu: "These precise de "+auteurCap+" avec analyse de sa pertinence",
+      points: [a, chapter],
+      isAuteur: true
+    });
+  });
+  
+  // Questions sur les distinctions
+  analyse.distinctions.slice(0,1).forEach(d=>{
+    questions.push({
+      q: "Explique la distinction suivante trouvee dans le cours : \""+d.slice(0,100)+"...\" — Pourquoi cette distinction est-elle philosophiquement/scientifiquement importante ?",
+      attendu: "Explication de la distinction avec sa portee",
+      points: ['distinction', 'difference', 'opposition'],
+      coursRef: d
+    });
+  });
+  
+  // Questions de comprehension profonde
+  const deepQ = [
+    {
+      q: "Sans regarder ton cours, explique l'idee centrale de "+chapter+" avec tes propres mots. Puis donne un exemple concret que le cours n'utilise pas.",
+      attendu: "Reformulation personnelle + exemple original",
+      points: analyse.conceptsCles.slice(0,3)
+    },
+    {
+      q: isPhilo 
+        ? "Quelle est la tension philosophique au coeur de "+chapter+" ? Formule le probleme en une question et dis pourquoi il n'a pas de reponse evidente."
+        : "Quelle est l'application pratique de "+chapter+" ? Decris une situation concrete et explique comment ce chapitre permet de l'analyser.",
+      attendu: isPhilo ? "Probleme philosophique bien formule" : "Application concrete avec explication",
+      points: analyse.conceptsCles.slice(0,4)
+    },
+    {
+      q: "Quelles sont les 3 idees les plus importantes du cours sur "+chapter+" ? Pour chacune, dis pourquoi elle est importante.",
+      attendu: "3 idees cles hierarchisees avec justification",
+      points: analyse.conceptsCles.slice(0,5)
+    },
+    {
+      q: "Y a-t-il des objections possibles aux idees du cours sur "+chapter+" ? Qu'est-ce qu'on pourrait reprocher ou contester ?",
+      attendu: "Identification des limites et objections serieuses",
+      points: ['limite', 'objection', 'critique', 'cependant']
+    },
+    {
+      q: "En quoi "+chapter+" est-il different de ce qu'on pourrait penser au premier abord ? Qu'est-ce que le cours t'a appris de surprenant ou de contre-intuitif ?",
+      attendu: "Nuance entre sens commun et sens philosophique/scientifique",
+      points: analyse.conceptsCles.slice(0,3)
+    }
+  ];
+  
+  const allQ = [...questions, ...deepQ].slice(0, 8);
+  return allQ.sort(()=>Math.random()-0.5);
+}
+
+// Evaluation avancee par analyse semantique
+function evaluerReponseLocale(reponse, question, course){
+  const rep = reponse.toLowerCase().trim();
+  const wordCount = reponse.trim().split(/\s+/).length;
+  const analyse = course ? analyseCours(course, '') : {auteurs:[], conceptsCles:[], definitions:[]};
+  
+  // Mots du cours dans la reponse
+  const courseWords = [...new Set(course.toLowerCase().split(/\W+/).filter(w=>w.length>4))];
+  const repWords = rep.split(/\W+/);
+  const matchedConcepts = courseWords.filter(w=>rep.includes(w));
+  const uniqueMatches = [...new Set(matchedConcepts)];
+  
+  // Qualite de la reponse
+  const hasConnectors = /car|parce que|puisque|donc|ainsi|en effet|c'est pourquoi|or|mais|cependant|en revanche|d'une part|d'autre part/.test(rep);
+  const hasExamples = /exemple|par exemple|ainsi|comme|notamment|prenons/.test(rep);
+  const hasAuteurs = analyse.auteurs.length>0 && analyse.auteurs.some(a=>rep.includes(a));
+  const hasNuance = /cependant|mais|toutefois|neanmoins|limite|objection|on pourrait/.test(rep);
+  
+  // Points cles de la question retrouves
+  const pointsFound = question.points ? question.points.filter(p=>rep.includes(p.toLowerCase())).length : 0;
+  
+  // Calcul du score
+  let score = 0;
+  // Longueur (developpement)
+  if(wordCount>=80) score+=25; else if(wordCount>=40) score+=15; else if(wordCount>=20) score+=5; else score-=10;
+  // Concepts du cours
+  if(uniqueMatches.length>=12) score+=30; else if(uniqueMatches.length>=7) score+=20; else if(uniqueMatches.length>=3) score+=10; else score-=5;
+  // Qualite argumentative
+  if(hasConnectors) score+=15;
+  if(hasExamples) score+=10;
+  if(hasAuteurs) score+=15;
+  if(hasNuance) score+=5;
+  if(pointsFound>=2) score+=10; else if(pointsFound>=1) score+=5;
+  
+  const compris = score >= 50;
+  
+  let feedback='', manque='', bravo='';
+  
+  // Feedback specifique et detaille
+  const missing = [];
+  if(wordCount<40) missing.push("developpement trop court ("+wordCount+" mots — vise minimum 60-80 mots)");
+  if(uniqueMatches.length<5) missing.push("utilise plus de termes precis du cours ("+uniqueMatches.length+" concepts retrouves)");
+  if(!hasConnectors) missing.push("structure ton raisonnement avec des connecteurs (car, donc, en effet, cependant...)");
+  if(!hasExamples) missing.push("illustre avec un exemple concret");
+  if(analyse.auteurs.length>0 && !hasAuteurs) missing.push("cite un auteur du cours ("+analyse.auteurs.map(a=>a.charAt(0).toUpperCase()+a.slice(1)).join(', ')+")");
+  
+  if(compris){
+    bravo = "Bonne comprehension ! Tu utilises "+uniqueMatches.length+" concepts du cours"+(hasAuteurs?" avec des auteurs":"")+(hasConnectors?", ton raisonnement est structure":"")+"."+(wordCount<60?" Developpe encore un peu plus.":" Bon developpement.");
+  } else {
+    feedback = "Reponse insuffisante. "+missing.slice(0,2).join(" ; ")+".";
+    manque = missing.length>0 ? "Points a ameliorer : "+missing.join(" | ") : "Approfondir le developpement.";
+  }
+  
+  return {compris, feedback, manque, bravo, score};
+}
+
+// Correction avancee du rappel actif
+function corrigerRappelLocal(rappel, course, chapter){
+  const rap = rappel.toLowerCase().trim();
+  const wordCount = rappel.trim().split(/\s+/).length;
+  const analyse = analyseCours(course, '');
+  
+  // Concepts retrouves
+  const courseWords = [...new Set(course.toLowerCase().split(/\W+/).filter(w=>w.length>5))];
+  const matches = courseWords.filter(w=>rap.includes(w));
+  const uniqueMatches = [...new Set(matches)];
+  
+  // Auteurs retrouves
+  const auteursRetrouve = analyse.auteurs.filter(a=>rap.includes(a));
+  const auteursMissed = analyse.auteurs.filter(a=>!rap.includes(a));
+  
+  // Definitions retrouvees
+  const defRetrouvees = analyse.definitions.filter(d=>rap.includes(d.terme.toLowerCase().trim())).length;
+  const defManquantes = analyse.definitions.filter(d=>!rap.includes(d.terme.toLowerCase().trim())).slice(0,3);
+  
+  // Score
+  const coverageScore = Math.min(10, Math.round((uniqueMatches.length/Math.max(courseWords.length,1))*100/3));
+  const lengthScore = wordCount>=150?4:wordCount>=80?2:wordCount>=40?1:0;
+  const auteurScore = Math.min(3, auteursRetrouve.length*1.5);
+  const defScore = Math.min(3, defRetrouvees);
+  const note = Math.min(20, Math.max(2, Math.round((coverageScore+lengthScore+auteurScore+defScore)*2)));
+  
+  // Feedback detaille
+  const bienRetenu = [];
+  if(uniqueMatches.length>=5) bienRetenu.push(uniqueMatches.length+" concepts cles retrouves");
+  if(auteursRetrouve.length>0) bienRetenu.push("auteurs retrouves : "+auteursRetrouve.map(a=>a.charAt(0).toUpperCase()+a.slice(1)).join(', '));
+  if(defRetrouvees>0) bienRetenu.push(defRetrouvees+" definition(s) identifiee(s)");
+  
+  const oublie = [];
+  if(auteursMissed.length>0) oublie.push("auteurs oublies : "+auteursMissed.map(a=>a.charAt(0).toUpperCase()+a.slice(1)).join(', '));
+  if(defManquantes.length>0) oublie.push("definitions manquantes : "+defManquantes.map(d=>d.terme).join(', '));
+  if(wordCount<80) oublie.push("restitution trop courte ("+wordCount+" mots)");
+  
+  return {
+    score: note,
+    bien_retenu: bienRetenu.length>0 ? bienRetenu.join(" ; ")+"." : "Effort de restitution present.",
+    oublie: oublie.length>0 ? oublie.join(" | ")+"." : "Bonne couverture du cours.",
+    inexact: wordCount<40 ? "Restitution tres courte — force-toi a ecrire tout ce que tu sais !" : "",
+    conseil: note<12 ? "Relis le cours en te concentrant sur : (1) les definitions, (2) les auteurs et leurs theses, (3) les distinctions importantes. Refais le rappel actif dans 20 minutes." : note<16 ? "Bon travail ! Pour progresser : assure-toi de retenir les auteurs avec leurs theses precises et les exemples cles." : "Excellent ! Tu maitrises bien ce chapitre. Passe a la dissertation ou a l'exercice bac."
+  };
+}
+
+// Correction avancee exercice bac
+function corrigerExoLocal(ans, subj, blockId, chapter){
+  const a = ans.toLowerCase().trim();
+  const isPhilo = blockId==='philo';
+  const wordCount = ans.trim().split(/\s+/).length;
+  const analyse = analyseCours(ans, blockId);
+  
+  // Structure
+  const hasIntro = /introduction|je vais|nous allons|il s'agit de|la question|le sujet/.test(a);
+  const hasConclu = /conclusion|ainsi|pour conclure|en conclusion|finalement|nous avons vu/.test(a);
+  const hasPlan = /i\.|ii\.|iii\.|premierement|deuxiemement|d'une part|d'autre part|en premier/.test(a);
+  const hasExamples = /exemple|par exemple|ainsi|notamment|comme|prenons|illustrons/.test(a);
+  const hasConnectors = /car|parce que|donc|ainsi|or|mais|cependant|en revanche/.test(a);
+  
+  // Philo specifique
+  const hasAuteurs = /kant|platon|descartes|sartre|hegel|nietzsche|freud|marx|aristote|rousseau|hume|berkeley/.test(a);
+  const hasPb = isPhilo && (/\?/.test(ans.slice(0,300)) || /probleme|question|tension|paradoxe/.test(a));
+  
+  // Sciences specifique
+  const hasFormulas = /[a-z]\s*=\s*[\d\w]|f\s*=|e\s*=|v\s*=|p\s*=|loi de|theorem|d'apres/.test(a);
+  const hasUnits = /m\/s|km\/h|newton|joule|watt|pascal|kelvin|mol|kg|metres?/.test(a);
+  const hasCalc = /\d+[\s\*\/+\-]\d+/.test(ans);
+  
+  // Mots du sujet dans la reponse
+  const subjWords = [...new Set(subj.toLowerCase().split(/\W+/).filter(w=>w.length>4))];
+  const subjMatches = subjWords.filter(w=>a.includes(w));
+  
+  // Score
+  let note = 6;
+  // Longueur
+  if(isPhilo){ if(wordCount>=600)note+=4; else if(wordCount>=350)note+=2; else if(wordCount<150)note-=3; }
+  else{ if(wordCount>=200)note+=3; else if(wordCount>=100)note+=1; else if(wordCount<50)note-=2; }
+  // Structure
+  if(hasIntro)note+=1; if(hasConclu)note+=1; if(hasPlan)note+=1;
+  if(hasExamples)note+=1; if(hasConnectors)note+=1;
+  // Contenu specifique
+  if(isPhilo){ if(hasAuteurs)note+=3; if(hasPb)note+=1; }
+  else{ if(hasFormulas)note+=2; if(hasUnits)note+=1; if(hasCalc)note+=1; }
+  // Couverture du sujet
+  if(subjMatches.length>=8)note+=2; else if(subjMatches.length>=4)note+=1;
+  
+  note = Math.min(20,Math.max(2,note));
+  
+  // Feedback detaille
+  const ptsForce=[], ptsFaibles=[], conseilsList=[];
+  if(isPhilo){
+    if(hasAuteurs) ptsForce.push("auteurs cites");
+    else ptsFaibles.push("aucun auteur philosophique cite — indispensable pour 16+");
+    if(hasPlan) ptsForce.push("structure en parties visible");
+    else conseilsList.push("structure ton devoir en parties I/II/III clairement annoncees");
+    if(wordCount<350) ptsFaibles.push("developpement trop court ("+wordCount+" mots — vise 500+)");
+    if(!hasExamples) conseilsList.push("ajouter des exemples concrets et originaux pour illustrer chaque argument");
+    conseilsList.push("chaque argument doit suivre : idee -> exemple -> analyse (pas juste lister des idees)");
+  } else {
+    if(hasFormulas) ptsForce.push("formules presentes");
+    else ptsFaibles.push("aucune formule posee — indispensable : ecris toujours la loi avant de calculer");
+    if(hasUnits) ptsForce.push("unites presentes");
+    else ptsFaibles.push("unites manquantes — chaque resultat doit avoir son unite");
+    if(!hasConclu) conseilsList.push("conclure chaque partie par une phrase de synthese");
+    conseilsList.push("justifie chaque etape de calcul avec la loi ou le theoreme utilise");
+  }
+  if(hasExamples&&isPhilo) ptsForce.push("exemples presents");
+  if(hasConnectors) ptsForce.push("connecteurs logiques utilises");
+  if(subjMatches.length<4) ptsFaibles.push("reponse peu centree sur le sujet ("+subjMatches.length+" termes du sujet retrouves)");
+  
+  return {
+    note,
+    points_forts: ptsForce.length>0 ? ptsForce.join(", ")+"." : "Travail fourni.",
+    points_faibles: ptsFaibles.slice(0,3).join(" | ")+".",
+    redaction: isPhilo 
+      ? (hasPlan?"Structure visible.":"Structure non claire — annonce explicitement tes parties.")+" "+(hasConnectors?"Bonne logique argumentative.":"Utilise des connecteurs : car, donc, or, cependant...")+" "+(wordCount<350?"Developpement insuffisant pour le bac.":"")
+      : (hasFormulas?"Formules presentes.":"Pose toujours la formule avant de calculer.")+" "+(hasUnits?"Unites presentes.":"Toujours mettre les unites apres chaque resultat.")+" "+(hasConclu?"Conclusions presentes.":"Conclure chaque question par une phrase."),
+    conseils: conseilsList.length>0 ? conseilsList.slice(0,4) : ["Continue dans cette direction.", "Approfondir les arguments.", "Varier les exemples.","Relire le sujet a chaque partie."],
+    pour_16: note>=16?"Excellent ! Maintiens ce niveau.":isPhilo?"Pour 16+ : auteurs analyses (pas juste cites), 3 parties dialectiques claires, problematique precise, exemples originaux, conclusion ouverte.":"Pour 16+ : formules toujours posees avec leur nom, unites systematiques, justification de chaque etape, phrase de conclusion par question."
+  };
+}
+
+// Correction dissertation philo avancee
+function corrigerDissLocal(pb, plan, dev, chapter){
+  const devL = dev.toLowerCase().trim();
+  const wordCount = dev.trim().split(/\s+/).length;
+  const pbL = pb.toLowerCase();
+  
+  // Analyse du developpement
+  const hasAuteurs = /kant|platon|descartes|sartre|hegel|nietzsche|freud|marx|aristote|rousseau|hume|berkeley|spinoza|locke/.test(devL);
+  const auteursTrouves = ['kant','platon','descartes','sartre','hegel','nietzsche','freud','marx','aristote','rousseau','hume','berkeley'].filter(a=>devL.includes(a));
+  const hasExamples = /exemple|par exemple|ainsi|comme|notamment|prenons/.test(devL);
+  const hasConnectors = /car|parce que|donc|ainsi|or|mais|cependant|en revanche|d'une part|d'autre part/.test(devL);
+  const hasAnalysis = /ce qui signifie|cela implique|autrement dit|c'est-a-dire|en d'autres termes|on peut en deduire/.test(devL);
+  const hasStructure = plan.includes('I.')||plan.includes('II.')||plan.includes('1.')||plan.includes('2.') || plan.split('\n').length>=3;
+  const hasPb = pb.length>30 && (pb.includes('?')||/comment|pourquoi|dans quelle mesure|est-il|peut-on/.test(pbL));
+  
+  // Score
+  let note = 6;
+  if(hasPb&&pb.length>50)note+=2; else if(hasPb)note+=1;
+  if(hasStructure)note+=2;
+  if(wordCount>=400)note+=4; else if(wordCount>=200)note+=2; else if(wordCount>=100)note+=1; else note-=2;
+  if(hasAuteurs)note+=3;
+  if(auteursTrouves.length>=2)note+=1;
+  if(hasExamples)note+=1;
+  if(hasConnectors)note+=1;
+  if(hasAnalysis)note+=1;
+  note = Math.min(20,Math.max(2,note));
+  
+  // Feedback tres detaille sur la redaction
+  let critiqueRedaction = "";
+  if(wordCount<150){
+    critiqueRedaction = "PROBLEME MAJEUR : ton developpement est extremement court ("+wordCount+" mots). Une grande partie de dissertation au bac fait minimum 400-500 mots. Chaque argument doit etre developpe en plusieurs phrases : (1) enonce l'idee, (2) explique-la, (3) illustre avec un exemple, (4) analyse pourquoi l'exemple prouve l'idee.";
+  } else if(!hasAnalysis){
+    critiqueRedaction = "Tes idees ne sont pas assez analysees ("+wordCount+" mots). Tu listes des arguments sans les developper. Apres chaque exemple, tu dois expliquer POURQUOI il prouve ton idee. Utilise des formules comme : 'ce qui signifie que...', 'cela implique...', 'on peut en deduire...'.";
+  } else if(!hasConnectors){
+    critiqueRedaction = "Ton raisonnement manque de fluidite. Structure chaque argument avec des connecteurs : 'En effet...' pour expliquer, 'Or...' pour introduire une nuance, 'Donc...' pour conclure, 'Cependant...' pour l'antithese. Sans eux, le correcteur voit une liste, pas un raisonnement.";
+  } else {
+    critiqueRedaction = "Bon effort de developpement ("+wordCount+" mots)."+(hasConnectors?" Connecteurs bien utilises.":"")+(hasAnalysis?" Raisonnement structure.":"")+(wordCount<400?" Developpe encore : vise 400+ mots pour la grande partie.":"");
+  }
+  
+  return {
+    note,
+    qualite_pb: hasPb ? "Problematique presente et bien formulee."+(pb.includes('?')?"":" Formule-la toujours sous forme de question.") : "Problematique insuffisante ("+pb.length+" caract.) — formule une vraie question philosophique qui montre la tension du sujet.",
+    qualite_plan: hasStructure ? "Plan structure visible avec "+(plan.split('\n').filter(l=>l.trim()).length)+" elements." : "Plan non structure — note clairement I. / II. / III. avec les sous-parties numerotees.",
+    critique_redaction: critiqueRedaction,
+    auteurs: hasAuteurs ? "Auteurs cites : "+auteursTrouves.map(a=>a.charAt(0).toUpperCase()+a.slice(1)).join(', ')+"."+(auteursTrouves.length===1?" Ajoute au moins un autre auteur pour enrichir l'argumentation.":"") : "AUCUN auteur philosophique ! C'est redhibitoire pour un 16+. Tu DOIS citer et analyser au moins 2-3 auteurs (Descartes, Kant, Sartre...) avec leurs theses precises.",
+    points_positifs: note>=12 ? "Bonne base."+(hasExamples?" Exemples presents.":"")+(hasConnectors?" Logique argumentative.":"")+(hasStructure?" Structure visible.":"") : "Effort fourni. Travaille la longueur et les auteurs.",
+    ameliorations: [
+      !hasAuteurs ? "Ajouter OBLIGATOIREMENT 2-3 auteurs avec leurs theses precises (ex: Pour Kant, la liberte c'est...)" : "Approfondir l'analyse des auteurs : expliquer EN QUOI leur these repond au probleme pose.",
+      wordCount<300 ? "Developper beaucoup plus : minimum 400 mots — chaque argument = idee + explication + exemple + analyse." : "Approfondir la 3eme partie (depassement) qui fait souvent la difference entre 14 et 16.",
+      !hasExamples ? "Ajouter des exemples concrets et originaux (pas 'la baguette de pain') pour illustrer chaque argument." : "Varier les exemples : litterature, actualite, sciences, vie quotidienne.",
+      !hasAnalysis ? "Developper l'analyse apres chaque exemple : 'ce qui signifie que...', 'on en deduit que...'" : "Soigner les transitions entre les parties pour montrer la progression de la reflexion."
+    ],
+    pour_16: note>=16?"Excellent niveau ! Maintiens la qualite de l'argumentation et du style.":note>=12?"Pour 16+ : auteurs mieux analyses, 3eme partie plus developlee (depassement original), style plus fluide.":"Pour au moins 14 : structure I/II/III, 2 auteurs analyses, developpement de 400+ mots, problematique precise."
+  };
+}
+
+// Questions Grand Oral avancees
+function genGoQuestions(expose, sujet){
+  const exp = expose.toLowerCase();
+  // Detecter le domaine
+  const isMaths = /equation|fonction|probabilite|derivee|integrale|nombre|suite|matrice/.test(exp);
+  const isPhysique = /force|energie|circuit|onde|lumiere|vitesse|acceleration|champ|loi de/.test(exp);
+  const isSVT = /gene|cellule|adn|evolution|organisme|ecosysteme|neurone|hormone/.test(exp);
+  const isPhilo = /conscience|liberte|verite|justice|art|technique|raison|morale/.test(exp);
+  
+  // Extraire termes cles de l'expose
+  const words = expose.split(/\W+/).filter(w=>w.length>5);
+  const freq = {};
+  words.forEach(w=>freq[w.toLowerCase()]=(freq[w.toLowerCase()]||0)+1);
+  const keyTerms = Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([w])=>w);
+  
+  const qs = [
+    { q: "Vous avez utilise le terme '"+( keyTerms[0]||sujet)+"'. Pouvez-vous en donner une definition precise et distinguer ce concept d'un concept voisin ?", attendu: "Definition precise + distinction avec concept proche" },
+    { q: "Quelle est la limite principale de votre argumentation ? Qu'est-ce qu'un contradicteur pourrait vous reprocher ?", attendu: "Identification d'une limite serieuse avec reponse" },
+    { q: isMaths||isPhysique ? "Pouvez-vous enoncer la loi ou la formule principale que vous avez utilisee et expliquer d'ou elle vient ?" : "Sur quel auteur ou quelle reference vous etes-vous appuye pour construire votre reflexion ?", attendu: "Formule/auteur cite avec explication de son origine ou de sa these" },
+    { q: "Si vous deviez approfondir ce sujet, quelle question vous semble la plus importante a explorer ? Pourquoi ?", attendu: "Question pertinente avec justification montrant la maitrise du sujet" },
+    { q: "Comment votre sujet "+sujet+" est-il lie a votre projet d'orientation ou a vos centres d'interet ?", attendu: "Lien personnel et reflechi avec le projet de l'eleve" }
+  ];
+  return qs;
+}
+
+// Note exposé Grand Oral
+function noterExpose(expose, sujet){
+  const exp = expose.toLowerCase().trim();
+  const wordCount = expose.trim().split(/\s+/).length;
+  const hasIntro = /je vais|l'objectif|je me suis interesse|j'ai choisi|cette question|je vais vous presenter|nous allons/.test(exp);
+  const hasConclusion = /conclusion|ainsi|pour conclure|en conclusion|finalement|nous avons vu|j'ai montre/.test(exp);
+  const hasExamples = /exemple|par exemple|notamment|comme|prenons|illustrons/.test(exp);
+  const hasNumbers = /\d+/.test(expose);
+  const hasConnectors = /premierement|deuxiemement|d'une part|d'autre part|ensuite|enfin|tout d'abord/.test(exp);
+  const hasScientific = /loi|formule|theoreme|equation|concept|notion|definition|principe/.test(exp);
+  
+  let note = 7;
+  if(wordCount>=400)note+=4; else if(wordCount>=200)note+=2; else if(wordCount>=100)note+=1;
+  if(hasIntro)note+=2; if(hasConclusion)note+=2;
+  if(hasExamples)note+=1; if(hasNumbers)note+=1;
+  if(hasConnectors)note+=1; if(hasScientific)note+=2;
+  note = Math.min(20,Math.max(4,note));
+  
+  const ameliorations = [];
+  if(!hasIntro) ameliorations.push("Commencer par une accroche et annoncer clairement le plan.");
+  if(!hasConclusion) ameliorations.push("Ajouter une conclusion qui repond a la question de depart.");
+  if(!hasExamples) ameliorations.push("Ajouter des exemples concrets et chiffres pour illustrer.");
+  if(wordCount<200) ameliorations.push("Developper plus — vise 5 minutes de parole (environ 600 mots).");
+  if(!hasConnectors) ameliorations.push("Structurer avec des transitions claires entre les parties.");
+  
+  return {
+    note_expose: note,
+    critique: wordCount<100?"Expose trop court pour le Grand Oral. Vise 5 minutes (600-700 mots).":"Contenu present."+( hasIntro&&hasConclusion?" Bonne structure.":!hasIntro?" Introduction manquante.":" Conclusion manquante."),
+    points_forts: [hasIntro&&"introduction presente", hasConclusion&&"conclusion presente", hasExamples&&"exemples presents", hasScientific&&"termes scientifiques/philosophiques"].filter(Boolean).join(", ")||"Effort fourni.",
+    ameliorations: ameliorations.length>0?ameliorations:["Travailler la fluidite du discours.","Anticiper les questions du jury.","Enrichir avec des references precises."],
+    questions: genGoQuestions(expose, sujet||"votre sujet")
+  };
+}
+
+async function callAI(prompt){ throw new Error('Mode local actif'); }
+// ========== INIT ==========
+window.addEventListener('load',()=>{
+  loadDB();
+  if(CUR&&DB.users[CUR]){
+    if(DB.users[CUR].pending) showPendingPage();
+    else launchApp();
+  }
+});
+</script>
+</body>
+</html>
